@@ -1,0 +1,43 @@
+Jeremy Elson, 31 March 1999
+
+
+Usage: tcpflow  [-b max_bytes] [-c] [-d debug_level] [-f max_fds]
+		[-i iface] [-p] [-s] [-v] [expression]
+
+-b max_bytes: Max bytes per flow.  Capture no more than max_bytes
+bytes per flow.  Any data captured for a flow beyond max_bytes from
+the first byte captured will be ignored.  The default is to store an
+unlimited number of bytes per flow.
+
+-c: Console print.  Print the contents of packets to stdout as they
+are received, without storing any captured data to files (implies -s).
+
+-d debug_level: Debug level.  Set the level of debugging messages
+printed to stderr to debug_level.  Higher numbers produce more
+messages.  -d 0 causes completely silent operation.  -d 1, the
+default, produces minimal status messages.  -d 10 produces verbose
+output equivalent to -v.  Numbers higher than 10 can produce a large
+amount of debugging information useful only to developers.
+
+-f max_fds: Max FDs used.  Limit the maximum number of file descriptors
+used by tcpflow to max_fds.  Higher numbers use more system resources
+but usually perform better.  If the underlying OS supports the
+setrlimit() system call, this OS will be asked to enforce this limit.
+The default is for tcpflow to use the maximum number of file
+descriptors allowed by the OS.
+
+-i iface: Interface name.  Capture packets from the network interface
+named 'iface'.  If no interface is specified with -i, a reasonable
+default will be used by the BPF packet capture library automatically.
+
+-p: Promiscuous mode.  Ask the BPF packet capture library to put the
+network interface into promiscuous mode before capturing packets.  The
+default is to NOT put the interface into promiscuous mode, but it
+might already be in promiscuous mode for some other reason.
+
+-s: Strip non-printables.  Convert all non-printable characters to the
+"." character before printing packets to the console or storing them
+to a file.
+
+-v: Verbose operation.  Verbosely describe tcpflow's operation.
+Equivalent to -d 10.
