@@ -41,16 +41,16 @@ AC_ARG_WITH(pcap,
 	    else
 		AC_MSG_RESULT($withval)
 		if test -d "$withval/include"; then
-		  CFLAGS="$CFLAGS -I$withval/include"
-		  CPPFLAGS="$CPPFLAGS -I$withval/include"
+		  CFLAGS="$CFLAGS -I$withval/include -I../$withval/include"
+		  CPPFLAGS="$CPPFLAGS -I$withval/include -I../$withval/include"
 		else
-		  CFLAGS="$CFLAGS -I$withval"
-		  CPPFLAGS="$CPPFLAGS -I$withval"
+		  CFLAGS="$CFLAGS -I$withval -I../$withval"
+		  CPPFLAGS="$CPPFLAGS -I$withval -I../$withval"
 		fi
 	        if test -d "$withval/lib"; then
-		  LIBS="$LIBS -L$withval/lib"
+		  LIBS="$LIBS -L$withval/lib -L../$withval/lib"
 		else
-		  LIBS="$LIBS -L$withval"
+		  LIBS="$LIBS -L$withval -L../$withval"
 		fi
 	    fi
 	    ;;
