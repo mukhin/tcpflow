@@ -9,3 +9,7 @@ Contributions were made by:
 -- Johnny Tevessen <j.tevessen@gmx.net>, for Linux systems still
    using libc5.
 
+-- Ross Golder <rossigee@bigfoot.com>, for a spec file for generating
+   tcpflow RPMs.
+
+

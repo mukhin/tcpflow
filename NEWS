@@ -1,3 +1,9 @@
+Version 0.20 (January 13, 2000):
+
+* We now distribute tcpflow RPMs, thanks to a spec file submitted by
+  Ross Golder <rossigee@bigfoot.com>.
+
+
 Version 0.12 (April 20, 1999):
 
 * Now compiles under IRIX, and using non-GCC compilers.

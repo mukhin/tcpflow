@@ -1,6 +1,6 @@
 AC_INIT(tcpflow.h)
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE(tcpflow, 0.12)
+AM_INIT_AUTOMAKE(tcpflow, 0.20)
 AM_CONFIG_HEADER(conf.h)
 
 
@@ -109,5 +109,5 @@ AC_CHECK_TYPE(fpos_t, long)
 
 dnl ############## Final Output
 
-AC_OUTPUT(Makefile tcpflow.1)
+AC_OUTPUT(Makefile tcpflow.1 tcpflow.spec)
 

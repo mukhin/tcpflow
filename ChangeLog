@@ -1,3 +1,11 @@
+2000-01-12  Jeremy Elson  <jelson@circlemud.org>
+
+	* tcpflow.spec.in: New file for creating RPMs, submitted by Ross
+	Golder <rossigee@bigfoot.com>.
+
+	* configure.in: Added generation of tcpflow.spec
+	* Makefile.am: Added distribution of tcpflow.spec.in
+
 1999-04-20  Jeremy Elson  <jelson@circlemud.org>
 
 	* Released version 0.12.
