@@ -1,5 +1,7 @@
 1999-04-13  Jeremy Elson  <jelson@circlemud.org>
 
+	* main.c (print_usage): Added.
+
 	* sysdep.h: Linux libc5 systems have different names for certain
 	structures.  Patch sent by Johnny Tevessen <j.tevessen@gmx.net>
 	
