@@ -8,6 +8,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.8  2002/03/29 23:18:51  jelson
+ * oops... fixed typo
+ *
  * Revision 1.7  2002/03/29 22:31:16  jelson
  * Added support for ISDN (/dev/ippp0), datalink handler for
  * DLT_LINUX_SLL.  Contributed by Detlef Conradin <dconradin at gmx.net>
@@ -186,7 +189,7 @@ pcap_handler find_handler(int datalink_type, char *device)
     { dl_ethernet, DLT_EN10MB },
     { dl_ethernet, DLT_IEEE802 },
     { dl_ppp, DLT_PPP },
-#ifdef DLT_LINUX_DLL
+#ifdef DLT_LINUX_SLL
     { dl_linux_sll, DLT_LINUX_SLL },
 #endif
     { NULL, 0 },
