@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
       DEBUG(10) ("converting non-printable characters to '.'");
       break;
     case 'd':
-      if ((debug_level = atoi(optarg)) <= 0) {
+      if ((debug_level = atoi(optarg)) < 0) {
 	debug_level = DEFAULT_DEBUG_LEVEL;
 	DEBUG(1) ("warning: -d flag with 0 debug level '%s'", optarg);
       }
