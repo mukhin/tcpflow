@@ -8,6 +8,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.8  1999/04/14 03:02:39  jelson
+ * added typecasts for portability
+ *
  * Revision 1.7  1999/04/13 01:38:16  jelson
  * Added portability features with 'automake' and 'autoconf'.  Added AUTHORS,
  * NEWS, README, etc files (currently empty) to conform to GNU standards.
@@ -51,7 +54,7 @@ void *check_malloc(size_t size)
 void init_debug(char *argv[])
 {
   debug_prefix = MALLOC(char, strlen(argv[0]) + 16);
-  sprintf(debug_prefix, "%s[%d]", argv[0], getpid());
+  sprintf(debug_prefix, "%s[%d]", argv[0], (int) getpid());
 }
 
 

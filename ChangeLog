@@ -1,6 +1,13 @@
 1999-04-13  Jeremy Elson  <jelson@circlemud.org>
 
-	* main.c (print_usage): Added.
+	* tcpip.c (process_ip): Portability: added typecast of an int to a
+	long, and changed the printf format to use a long (%ld) instead of
+	an int (%d).  This is because some systems define these variables
+	as long to begin with.
+	* tcpip.c (store_packet): Same thing.
+	* util.c (init_debug): Same thing.
+
+	* main.c (print_usage): Added function to give help.
 
 	* sysdep.h: Linux libc5 systems have different names for certain
 	structures.  Patch sent by Johnny Tevessen <j.tevessen@gmx.net>

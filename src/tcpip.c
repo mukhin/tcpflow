@@ -8,6 +8,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.7  1999/04/14 03:02:39  jelson
+ * added typecasts for portability
+ *
  * Revision 1.6  1999/04/13 23:17:56  jelson
  * More portability fixes.  All system header files now conditionally
  * included from sysdep.h.
@@ -62,8 +65,8 @@ void process_ip(const char *data, u_int32_t caplen)
    * beyond the end of the packet (e.g. ethernet padding). */
   ip_total_len = ntohs(ip_header->ip_len);
   if (caplen < ip_total_len) {
-    DEBUG(6) ("warning: captured only %d bytes of %d-byte IP datagram",
-	 caplen, ip_total_len);
+    DEBUG(6) ("warning: captured only %ld bytes of %ld-byte IP datagram",
+	 (long) caplen, (long) ip_total_len);
   }
 
   /* XXX - throw away everything but fragment 0; this version doesn't
@@ -224,8 +227,8 @@ void store_packet(flow_t flow, const char *data, u_int32_t length,
   }
 
   /* write the data into the file */
-  DEBUG(11) ("%s: writing %d bytes @%d", flow_filename(state->flow),
-	  length, offset);
+  DEBUG(11) ("%s: writing %ld bytes @%ld", flow_filename(state->flow),
+	  (long) length, (long) offset);
 
   if (fwrite(data, length, 1, state->fp) < 0) {
     /* sigh... this should be a nice, plain DEBUG statement that
