@@ -11,6 +11,7 @@ Copyright: GPL
 Group: Console/Networking
 Source: ftp://ftp.circlemud.org/pub/jelson/tcpflow/tcpflow-@VERSION@.tar.gz
 BuildRoot: /var/tmp/tcpflow-root
+Prefix: %prefix
 URL: http://www.circlemud.org/~jelson/software/tcpflow/
 
 %description

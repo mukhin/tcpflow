@@ -12,4 +12,6 @@ Contributions were made by:
 -- Ross Golder <rossigee@bigfoot.com>, for a spec file for generating
    tcpflow RPMs.
 
+-- Jose M. Alcaide <jose@we.lc.ehu.es>, patch for the -r option
+
 

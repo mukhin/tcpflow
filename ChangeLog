@@ -1,3 +1,9 @@
+2001-02-26  Jeremy Elson  <jelson@circlemud.org>
+
+	* main.c, tcpflow.1.in: Added patch from "Jose M. Alcaide"
+	<jose@we.lc.ehu.es> (FreeBSD port maintainer) so that tcpflow can
+	read from tcpdump output files.
+
 2000-01-12  Jeremy Elson  <jelson@circlemud.org>
 
 	* tcpflow.spec.in: New file for creating RPMs, submitted by Ross
