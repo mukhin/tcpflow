@@ -24,7 +24,17 @@ containing IP fragments will not be recorded properly.
 tcpflow is based on the LBL Packet Capture Library (available at
 ftp://ftp.ee.lbl.gov/libpcap.tar.Z) and therefore supports the same
 rich filtering expressions that programs like 'tcpdump' support.
-Also, becaus
+It should compile under most popular versions of UNIX; see the INSTALL
+file for details.
+
+
+tcpflow stores all captured data in files that have names of the form
+
+            128.129.130.131.02345-010.011.012.013.45103
+
+where the contents of the above file would be data transmitted from
+host 128.129.131.131 port 2345, to host 10.11.12.13 port 45103.
+
 
 
 == What use is it?
@@ -63,3 +73,5 @@ sufficiently advanced attacker; for more information, see
 http://www.secnet.com/papers/ids-html/ .
 
 
+Jeremy Elson
+jelson@circlemud.org
