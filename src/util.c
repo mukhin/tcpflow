@@ -113,11 +113,10 @@ char *copy_argv(char *argv[])
 }
 
 
-char *socket_filename(u_int32_t src, u_int16_t sport, u_int32_t dst,
-		      u_int16_t dport)
-{
 #define RING_SIZE 6
 
+char *socket_filename(flow_t flow)
+{
   static char ring_buffer[RING_SIZE][32];
   static int ring_pos = 0;
 
@@ -125,18 +124,80 @@ char *socket_filename(u_int32_t src, u_int16_t sport, u_int32_t dst,
 
   sprintf(ring_buffer[ring_pos],
 	  "%03d.%03d.%03d.%03d.%05d-%03d.%03d.%03d.%03d.%05d",
-	  (u_int8_t) ((src & 0xff000000) >> 24),
-	  (u_int8_t) ((src & 0x00ff0000) >> 16),
-	  (u_int8_t) ((src & 0x0000ff00) >> 8),
-	  (u_int8_t)  (src & 0x000000ff),
-	  sport,
-	  (u_int8_t) ((dst & 0xff000000) >> 24),
-	  (u_int8_t) ((dst & 0x00ff0000) >> 16),
-	  (u_int8_t) ((dst & 0x0000ff00) >> 8),
-	  (u_int8_t)  (dst & 0x000000ff),
-	  dport);
+	  (u_int8_t) ((flow.src & 0xff000000) >> 24),
+	  (u_int8_t) ((flow.src & 0x00ff0000) >> 16),
+	  (u_int8_t) ((flow.src & 0x0000ff00) >> 8),
+	  (u_int8_t)  (flow.src & 0x000000ff),
+	  flow.sport,
+	  (u_int8_t) ((flow.dst & 0xff000000) >> 24),
+	  (u_int8_t) ((flow.dst & 0x00ff0000) >> 16),
+	  (u_int8_t) ((flow.dst & 0x0000ff00) >> 8),
+	  (u_int8_t)  (flow.dst & 0x000000ff),
+	  flow.dport);
 
   return ring_buffer[ring_pos];
 }
 
-  
+
+/* Try to find the maximum number of FDs this system can have open */
+int get_max_fds(void)
+{
+  int max_descs = 0;
+  const char *method;
+
+/* First, we'll try using getrlimit/setrlimit.  This will probably
+ * work on most systems.  HAS_RLIMIT is defined in sysdep.h.  */
+#ifdef HAS_RLIMIT
+  {
+    struct rlimit limit;
+
+    method = "rlimit";
+    if (getrlimit(RLIMIT_NOFILE, &limit) < 0) {
+      perror("calling getrlimit");
+      exit(1);
+    }
+
+    /* set the current to the maximum */
+    limit.rlim_cur = limit.rlim_max;
+    if (setrlimit(RLIMIT_NOFILE, &limit) < 0) {
+      perror("calling setrlimit");
+      exit(1);
+    }
+
+#ifdef RLIM_INFINITY
+    if (limit.rlim_max == RLIM_INFINITY)
+      max_descs = MAX_FD_GUESS * 4;
+#else
+    max_descs = limit.rlim_max);
+#endif
+
+#elif defined (OPEN_MAX) || defined(FOPEN_MAX)
+#if !defined(OPEN_MAX)
+#define OPEN_MAX FOPEN_MAX
+#endif
+  /* rlimit didn't work, but you have OPEN_MAX */
+  method = "OPEN_MAX";
+  max_descs = OPEN_MAX;
+#elif defined (_SC_OPEN_MAX)
+  /* Okay, you don't have getrlimit() and you don't have OPEN_MAX.
+   * Time to try the POSIX sysconf() function.  (See Stevens'
+   * _Advanced Programming in the UNIX Environment_).  */
+  method = "POSIX sysconf";
+  errno = 0;
+  if ((max_descs = sysconf(_SC_OPEN_MAX)) < 0) {
+    if (errno == 0)
+      max_descs = MAX_FD_GUESS * 4;
+    else {
+      perror("calling sysconf");
+      exit(1);
+    }
+  }
+#else
+  /* if everything has failed, we'll just take a guess */
+  method = "random guess";
+  max_descs = MAX_FD_GUESS;
+#endif
+
+  debug(2, "setting max FDs to %d using %s", max_descs, method);
+  return max_descs;
+}

@@ -74,8 +74,9 @@ void process_ip(const char *packet, int caplen)
 void process_tcp(const char *packet, int length, u_int32_t src, u_int32_t dst)
 {
   struct tcphdr *tcp_header = (struct tcphdr *) packet;
+  flow_t this_flow;
   u_int tcp_header_len;
-  u_int16_t sport, dport;
+
   u_int32_t seq;
 
   if (length < sizeof(struct tcphdr)) {
@@ -90,14 +91,19 @@ void process_tcp(const char *packet, int length, u_int32_t src, u_int32_t dst)
   if (length <= tcp_header_len)
     return;
 
-  sport = ntohs(tcp_header->th_sport);
-  dport = ntohs(tcp_header->th_dport);
+
+  this_flow.src = src;
+  this_flow.dst = dst;
+  this_flow.sport = ntohs(tcp_header->th_sport);
+  this_flow.dport = ntohs(tcp_header->th_dport);
   seq = ntohl(tcp_header->th_seq);
 
   packet += tcp_header_len;
   length -= tcp_header_len;
 
-  printf("%s: ", socket_filename(src, sport, dst, dport));
+  printf("%s: %d\n", socket_filename(this_flow), HASH_FLOW(this_flow));
+#if 0
+  printf("%s: ", socket_filename(this_flow));
   while (length) {
     if (isprint(*packet) || *packet == '\n' || *packet == '\r')
       putchar(*packet);
@@ -107,5 +113,6 @@ void process_tcp(const char *packet, int length, u_int32_t src, u_int32_t dst)
     packet++;
   }
   putchar('\n');
+#endif
 
 }
