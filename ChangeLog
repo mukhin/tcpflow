@@ -5,6 +5,11 @@
 	interface, usually), so we don't allow those expressions and
 	print a warning if the user is trying to use one.
 
+	* datalink.c (dl_null): We no longer check that the datalink type
+	is AF_INET; this seems to be broken.  Probably a bug in libpcap.
+
+	* tcpip.c (store_packet): Changed debug level of messages.
+
 1999-04-14  Jeremy Elson  <jelson@circlemud.org>
 
 	* tcpip.c (store_packet): Now correctly checking the return value
