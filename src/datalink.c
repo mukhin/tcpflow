@@ -8,6 +8,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.5  1999/04/20 19:39:18  jelson
+ * changes to fix broken localhost (DLT_NULL) handling
+ *
  * Revision 1.4  1999/04/13 23:17:55  jelson
  * More portability fixes.  All system header files now conditionally
  * included from sysdep.h.
@@ -32,7 +35,8 @@ static char *cvsid = "$Id$";
 
 
 /* The DLT_NULL packet header is 4 bytes long. It contains a network
- * order 32 bit integer that specifies the family, e.g. AF_INET */
+ * order 32 bit integer that specifies the family, e.g. AF_INET.
+ * DLT_NULL is used by the localhost interface. */
 #define	NULL_HDRLEN 4
 
 void dl_null(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
@@ -51,19 +55,24 @@ void dl_null(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
     return;
   }
 
+#if 0  /* this doesn't seem to work reliably */
   /* make sure this is AF_INET */
   memcpy((char *)&family, (char *)p, sizeof(family));
+  family = ntohl(family);
   if (family != AF_INET) {
-    DEBUG(6) ("warning: received non-AF_INET null frame");
+    DEBUG(6) ("warning: received non-AF_INET null frame (type %d)", family);
     return;
   }
+#endif
 
   process_ip(p + NULL_HDRLEN, caplen - NULL_HDRLEN);
 }
 
 
 
-
+/* Ethernet datalink handler; used by all 10 and 100 mbit/sec
+ * ethernet.  We are given the entire ethernet header so we check to
+ * make sure it's marked as being IP. */
 void dl_ethernet(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
 {
   u_int caplen = h->caplen;
@@ -93,7 +102,8 @@ void dl_ethernet(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
 
 
 /* The DLT_PPP packet header is 4 bytes long.  We just move past it
- * without parsing it.  */
+ * without parsing it.  It is used for PPP on some OSs (DLT_RAW is
+ * used by others; see below) */
 #define	PPP_HDRLEN 4
 
 void dl_ppp(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
@@ -115,7 +125,9 @@ void dl_ppp(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
 }
 
 
-/* RAW: just a raw IP packet, no encapsulation */
+/* DLT_RAW: just a raw IP packet, no encapsulation or link-layer
+ * headers.  Used for PPP connections under some OSs including Linux
+ * and IRIX. */
 void dl_raw(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
 {
   u_int caplen = h->caplen;
@@ -139,7 +151,7 @@ pcap_handler find_handler(int datalink_type, char *device)
     int type;
   } handlers[] = {
     { dl_null, DLT_NULL },
-#ifdef DLT_RAW
+#ifdef DLT_RAW /* older versions of libpcap do not have DLT_RAW */
     { dl_raw, DLT_RAW },
 #endif
     { dl_ethernet, DLT_EN10MB },

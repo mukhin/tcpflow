@@ -8,6 +8,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.10  1999/04/20 19:39:19  jelson
+ * changes to fix broken localhost (DLT_NULL) handling
+ *
  * Revision 1.9  1999/04/14 22:17:40  jelson
  * (re-)fixed checking of fwrite's return value
  *
@@ -233,7 +236,7 @@ void store_packet(flow_t flow, const char *data, u_int32_t length,
   }
 
   /* write the data into the file */
-  DEBUG(11) ("%s: writing %ld bytes @%ld", flow_filename(state->flow),
+  DEBUG(25) ("%s: writing %ld bytes @%ld", flow_filename(state->flow),
 	  (long) length, (long) offset);
 
   if (fwrite(data, length, 1, state->fp) != 1) {

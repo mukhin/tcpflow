@@ -1,3 +1,10 @@
+1999-04-20  Jeremy Elson  <jelson@circlemud.org>
+
+	* main.c (main): libpcap doesn't seem to be able to handle
+	filtering expressions when using DLT_NULL (the 'localhost'
+	interface, usually), so we don't allow those expressions and
+	print a warning if the user is trying to use one.
+
 1999-04-14  Jeremy Elson  <jelson@circlemud.org>
 
 	* tcpip.c (store_packet): Now correctly checking the return value

@@ -8,6 +8,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.11  1999/04/20 19:39:18  jelson
+ * changes to fix broken localhost (DLT_NULL) handling
+ *
  * Revision 1.10  1999/04/14 22:19:56  jelson
  * cosmetic change to help screen
  *
@@ -79,7 +82,7 @@ int main(int argc, char *argv[])
   extern int opterr;
   extern int optopt;
   extern char *optarg;
-  int arg;
+  int arg, dlt;
   int need_usage = 0;
 
   char *device = NULL;
@@ -164,23 +167,34 @@ int main(int argc, char *argv[])
   /* drop root privileges - we don't need them any more */
   setuid(getuid());
 
+  /* remember what datalink type the selected network interface is */
+  dlt = pcap_datalink(pd);
+
   /* get the handler for this network interface */
-  handler = find_handler(pcap_datalink(pd), device);
+  handler = find_handler(dlt, device);
 
   /* get the user's expression out of argv */
   expression = copy_argv(&argv[optind]);
 
-  /* add to it that we only want IP datagrams */
-  if (expression == NULL) {
-    expression = "ip";
-  } else {
-    char *new_expression = MALLOC(char, strlen(expression) + 30);
-    sprintf(new_expression, "(ip) and (%s)", expression);
-    free(expression);
-    expression = new_expression;
+  /*
+   * add to it that we only want IP datagrams
+   *
+   * fixed 20 april 1999: adding 'ip' to interfaces of type DLT_NULL *
+   * seems to prevent any packets from getting matched.  -JE
+   */
+  if (dlt != DLT_NULL) {
+    if (expression == NULL) {
+      expression = "ip";
+    } else {
+      char *new_expression = MALLOC(char, strlen(expression) + 30);
+      sprintf(new_expression, "(ip) and (%s)", expression);
+      free(expression);
+      expression = new_expression;
+    }
   }
 
-  DEBUG(20) ("filter expression: '%s'", expression);
+  DEBUG(20) ("filter expression: '%s'",
+	     expression == NULL ? "<NULL>" : expression);
 
   /* install the filter expression in libpcap */
   if (pcap_compile(pd, &fcode, expression, 1, 0) < 0)
