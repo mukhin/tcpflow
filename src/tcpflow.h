@@ -55,6 +55,7 @@ typedef struct flow_state_struct {
   FILE *fp;			/* Pointer to file storing this flow's data */
   fpos_t pos;			/* Current write position in fp */
   int flags;			/* Don't save any more data from this flow */
+  int last_access;		/* "Time" of last access */
 } flow_state_struct;
 
 #define FLOW_FINISHED		(1 << 0)
@@ -111,4 +112,6 @@ void init_flow_state();
 flow_state_t *find_flow_state(flow_t flow);
 flow_state_t *create_flow_state(flow_t flow, tcp_seq isn);
 FILE *open_file(flow_state_t *flow_state);
-void close_file(flow_state_t *flow_state);
+int close_file(flow_state_t *flow_state);
+void sort_fds();
+void contract_fd_ring();

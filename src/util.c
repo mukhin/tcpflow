@@ -114,7 +114,7 @@ char *copy_argv(char *argv[])
 
 char *flow_filename(flow_t flow)
 {
-  static char ring_buffer[RING_SIZE][32];
+  static char ring_buffer[RING_SIZE][48];
   static int ring_pos = 0;
 
   ring_pos = (ring_pos + 1) % RING_SIZE;
@@ -155,7 +155,8 @@ int get_max_fds(void)
     }
 
     /* set the current to the maximum */
-    limit.rlim_cur = limit.rlim_max;
+    /*    limit.rlim_cur = limit.rlim_max; */
+    limit.rlim_cur = 8;
     if (setrlimit(RLIMIT_NOFILE, &limit) < 0) {
       perror("calling setrlimit");
       exit(1);
