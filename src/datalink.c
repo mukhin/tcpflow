@@ -8,6 +8,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.6  1999/04/21 01:40:13  jelson
+ * DLT_NULL fixes, u_char fixes, additions to configure.in, man page update
+ *
  * Revision 1.5  1999/04/20 19:39:18  jelson
  * changes to fix broken localhost (DLT_NULL) handling
  *
@@ -55,7 +58,10 @@ void dl_null(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
     return;
   }
 
-#if 0  /* this doesn't seem to work reliably */
+  /* One of the symptoms of a broken DLT_NULL is that this value is
+   * not set correctly, so we don't check for it -- instead, just
+   * assume everything is IP.  --JE 20 April 1999*/
+#ifndef DLT_NULL_BROKEN
   /* make sure this is AF_INET */
   memcpy((char *)&family, (char *)p, sizeof(family));
   family = ntohl(family);

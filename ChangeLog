@@ -1,12 +1,37 @@
 1999-04-20  Jeremy Elson  <jelson@circlemud.org>
 
-	* main.c (main): libpcap doesn't seem to be able to handle
-	filtering expressions when using DLT_NULL (the 'localhost'
-	interface, usually), so we don't allow those expressions and
-	print a warning if the user is trying to use one.
+	* tcpflow.1.in: Updated man page.
 
+	* main.c (main): libpcap, when running under Linux, doesn't seem
+	to be able to handle filtering expressions when using DLT_NULL
+	(usually the loopback interface -- i.e. "localhost"), so we don't
+	allow those expressions and print a warning if the user is trying
+	to use one.  Controlled via the DLT_NULL_BROKEN define in conf.h.
 	* datalink.c (dl_null): We no longer check that the datalink type
-	is AF_INET; this seems to be broken.  Probably a bug in libpcap.
+	is AF_INET if DLT_NULL_BROKEN is defined.
+	* configure.in: Added AC_CANONICAL_SYSTEM, and define
+	DLT_NO_BROKEN if we are using Linux.
+	* acconfig.h: Added entry for DLT_NULL_BROKEN.
+
+	* tcpflow.h: We use __attribute__ now only if __GNUC__ is defined,
+	so that the code compiles on non-GCC compilers.
+	
+	* configure.in: Check for standards.h, for IRIX compatibility.
+	(I have a custom autoconf that I changed to automatically #include
+	standards.h, if the check succeeds, in future header file checks.
+	* sysdep.h: Conditional #include <standards.h> added.
+	
+	* configure.in: Only check for -lnsl if gethostbyaddr() doesn't
+	work without it; same for -lsocket and socket().
+	
+	* tcpip.c (process_ip, process_tcp, do_strip_nonprint,
+	print_packet, store_packet): Changed to take a u_char.
+	* tcpflow.h: Changed packet handling function argument prototypes
+	and return values to use u_char instead of char.
+	* configure.in: Added checking for u_char.
+	* acconfig.h: Added entry for u_char.
+
+	* tcpip.c (process_ip, process_tcp): Added debugging messages.
 
 	* tcpip.c (store_packet): Changed debug level of messages.
 

@@ -511,6 +511,11 @@ IP fragments will not be recorded correctly.
 tcpflow never frees state associated with flows that it records, so
 will grow large if used to capture a very large number of flows (e.g.,
 on the order of 100,000 flows or more).
+.LP
+There appears to be a bug in the way that Linux delivers packets to
+libpcap when using the loopback interface ("localhost").  In these
+situations, selective packet filtering is not possible; all TCP flows
+on the localhost interface will be recorded.
 .SH AUTHOR
 Jeremy Elson <jelson@circlemud.org>
 .LP

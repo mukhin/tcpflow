@@ -8,6 +8,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.11  1999/04/21 01:40:16  jelson
+ * DLT_NULL fixes, u_char fixes, additions to configure.in, man page update
+ *
  * Revision 1.10  1999/04/20 19:39:19  jelson
  * changes to fix broken localhost (DLT_NULL) handling
  *
@@ -53,7 +56,7 @@ extern int strip_nonprint;
  * process_tcp() for further processing.
  *
  * Note: we currently don't know how to handle IP fragments. */
-void process_ip(const char *data, u_int32_t caplen)
+void process_ip(const u_char *data, u_int32_t caplen)
 {
   const struct ip *ip_header = (struct ip *) data;
   u_int ip_header_len;
@@ -66,8 +69,10 @@ void process_ip(const char *data, u_int32_t caplen)
   }
 
   /* for now we're only looking for TCP; throw away everything else */
-  if (ip_header->ip_p != IPPROTO_TCP)
+  if (ip_header->ip_p != IPPROTO_TCP) {
+    DEBUG(50) ("got non-TCP frame -- IP proto %d", ip_header->ip_p);
     return;
+  }
 
   /* check and see if we got everything.  NOTE: we must use
    * ip_total_len after this, because we may have captured bytes
@@ -101,7 +106,7 @@ void process_ip(const char *data, u_int32_t caplen)
 }
 
 
-void process_tcp(const char *data, u_int32_t length, u_int32_t src,
+void process_tcp(const u_char *data, u_int32_t length, u_int32_t src,
 		 u_int32_t dst)
 {
   struct tcphdr *tcp_header = (struct tcphdr *) data;
@@ -118,8 +123,10 @@ void process_tcp(const char *data, u_int32_t length, u_int32_t src,
   tcp_header_len = tcp_header->th_off * 4;
 
   /* return if this packet doesn't have any data (e.g., just an ACK) */
-  if (length <= tcp_header_len)
+  if (length <= tcp_header_len) {
+    DEBUG(50) ("got TCP segment with no data");
     return;
+  }
 
   /* fill in the flow_t structure with info that identifies this flow */
   this_flow.src = src;
@@ -148,10 +155,10 @@ void process_tcp(const char *data, u_int32_t length, u_int32_t src,
 
 /* convert all non-printable characters to '.' (period).  not
  * thread-safe, obviously, but neither is most of the rest of this. */
-char *do_strip_nonprint(const char *data, u_int32_t length)
+u_char *do_strip_nonprint(const u_char *data, u_int32_t length)
 {
-  static char buf[SNAPLEN];
-  char *write_ptr;
+  static u_char buf[SNAPLEN];
+  u_char *write_ptr;
 
   write_ptr = buf;
   while (length) {
@@ -169,7 +176,7 @@ char *do_strip_nonprint(const char *data, u_int32_t length)
 
 
 /* print the contents of this packet to the console */
-void print_packet(flow_t flow, const char *data, u_int32_t length)
+void print_packet(flow_t flow, const u_char *data, u_int32_t length)
 {
   printf("%s: ", flow_filename(flow));
   fwrite(data, length, 1, stdout);
@@ -178,7 +185,7 @@ void print_packet(flow_t flow, const char *data, u_int32_t length)
 
 
 /* store the contents of this packet to its place in its file */
-void store_packet(flow_t flow, const char *data, u_int32_t length,
+void store_packet(flow_t flow, const u_char *data, u_int32_t length,
 		  u_int32_t seq)
 {
   flow_state_t *state;

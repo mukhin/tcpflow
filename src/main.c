@@ -8,6 +8,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.12  1999/04/21 01:40:14  jelson
+ * DLT_NULL fixes, u_char fixes, additions to configure.in, man page update
+ *
  * Revision 1.11  1999/04/20 19:39:18  jelson
  * changes to fix broken localhost (DLT_NULL) handling
  *
@@ -82,7 +85,7 @@ int main(int argc, char *argv[])
   extern int opterr;
   extern int optopt;
   extern char *optarg;
-  int arg, dlt;
+  int arg, dlt, user_expression = 0;
   int need_usage = 0;
 
   char *device = NULL;
@@ -139,8 +142,6 @@ int main(int argc, char *argv[])
       break;
     case 'v':
       debug_level = 10;
-      DEBUG(10) ("%s version %s by Jeremy Elson <jelson@circlemud.org>",
-		 PACKAGE, VERSION);
       break;
     default:
       DEBUG(1) ("error: unrecognized switch '%c'", optopt);
@@ -154,6 +155,10 @@ int main(int argc, char *argv[])
     print_usage(argv[0]);
     exit(1);
   }
+
+  /* hello, world */
+  DEBUG(10) ("%s version %s by Jeremy Elson <jelson@circlemud.org>",
+	     PACKAGE, VERSION);
 
   /* if the user didn't specify a device, try to find a reasonable one */
   if (device == NULL)
@@ -176,22 +181,33 @@ int main(int argc, char *argv[])
   /* get the user's expression out of argv */
   expression = copy_argv(&argv[optind]);
 
-  /*
-   * add to it that we only want IP datagrams
-   *
-   * fixed 20 april 1999: adding 'ip' to interfaces of type DLT_NULL *
-   * seems to prevent any packets from getting matched.  -JE
-   */
-  if (dlt != DLT_NULL) {
-    if (expression == NULL) {
-      expression = "ip";
-    } else {
-      char *new_expression = MALLOC(char, strlen(expression) + 30);
-      sprintf(new_expression, "(ip) and (%s)", expression);
-      free(expression);
-      expression = new_expression;
+  /* add 'ip' to the user-specified filtering expression (if any) to
+   * prevent non-ip packets from being delivered. */
+  if (expression == NULL) {
+    expression = "ip";
+    user_expression = 0;
+  } else {
+    char *new_expression = MALLOC(char, strlen(expression) + 30);
+    sprintf(new_expression, "(ip) and (%s)", expression);
+    free(expression);
+    expression = new_expression;
+    user_expression = 1;
+  }
+
+  /* If DLT_NULL is "broken", giving *any* expression to the pcap
+   * library when we are using a device of type DLT_NULL causes no
+   * packets to be delivered.  In this case, we use no expression, and
+   * print a warning message if there is a user-specified expression */
+#ifdef DLT_NULL_BROKEN
+  if (dlt == DLT_NULL && expression != NULL) {
+    free(expression);
+    expression = NULL;
+    if (user_expression) {
+      DEBUG(1)("warning: DLT_NULL (loopback device) is broken on your system;");
+      DEBUG(1)("         filtering does not work.  Recording *all* packets.");
     }
   }
+#endif /* DLT_NULL_BROKEN */
 
   DEBUG(20) ("filter expression: '%s'",
 	     expression == NULL ? "<NULL>" : expression);

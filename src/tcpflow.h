@@ -8,6 +8,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.8  1999/04/21 01:40:16  jelson
+ * DLT_NULL fixes, u_char fixes, additions to configure.in, man page update
+ *
  * Revision 1.7  1999/04/13 01:38:14  jelson
  * Added portability features with 'automake' and 'autoconf'.  Added AUTHORS,
  * NEWS, README, etc files (currently empty) to conform to GNU standards.
@@ -95,21 +98,27 @@ void *check_malloc(size_t size);
 char *flow_filename(flow_t flow);
 int get_max_fds(void);
 void debug_real(char *fmt, ...)
-                __attribute__ ((format (printf, 1, 2)));
+#ifdef __GNUC__
+                __attribute__ ((format (printf, 1, 2)))
+#endif
+;
 void die(char *fmt, ...)
-                __attribute__ ((format (printf, 1, 2)));
+#ifdef __GNUC__
+                __attribute__ ((format (printf, 1, 2)))
+#endif
+;
 
 /* datalink.c */
 pcap_handler find_handler(int datalink_type, char *device);
 
 /* tcpip.c */
-void process_ip(const char *data, u_int32_t length);
-void process_tcp(const char *data, u_int32_t length, u_int32_t src,
+void process_ip(const u_char *data, u_int32_t length);
+void process_tcp(const u_char *data, u_int32_t length, u_int32_t src,
 		 u_int32_t dst);
-void print_packet(flow_t flow, const char *data, u_int32_t length);
-void store_packet(flow_t flow, const char *data, u_int32_t length,
+void print_packet(flow_t flow, const u_char *data, u_int32_t length);
+void store_packet(flow_t flow, const u_char *data, u_int32_t length,
 		  u_int32_t seq);
-char *do_strip_nonprint(const char *data, u_int32_t length);
+u_char *do_strip_nonprint(const u_char *data, u_int32_t length);
 
 /* flow.c */
 void init_flow_state();

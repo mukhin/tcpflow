@@ -8,6 +8,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.3  1999/04/21 01:40:14  jelson
+ * DLT_NULL fixes, u_char fixes, additions to configure.in, man page update
+ *
  * Revision 1.2  1999/04/13 23:17:56  jelson
  * More portability fixes.  All system header files now conditionally
  * included from sysdep.h.
@@ -41,6 +44,10 @@
 #include <ctype.h>
 #include <stdarg.h>
 #include <errno.h>
+
+#ifdef HAVE_STANDARDS_H
+# include <standards.h>
+#endif
 
 #ifdef HAVE_STRING_H
 # include <string.h>
