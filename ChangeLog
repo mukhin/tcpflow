@@ -1,4 +1,8 @@
 2003-08-07  Jeremy Elson  <jelson@circlemud.org>
+	* Released v0.21.  Sticking to my strict schedule of releasing at
+	least one minor release per year. :-)
+	
+2003-08-07  Jeremy Elson  <jelson@circlemud.org>
 
 	* src/main.c: Fixed format string attack.  Found by David
 	Goldsmith of atstake.com.

@@ -1,6 +1,6 @@
 AC_INIT(/src/tcpflow.h)
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE(tcpflow, 0.20)
+AM_INIT_AUTOMAKE(tcpflow, 0.21)
 AM_CONFIG_HEADER(src/conf.h)
 
 
