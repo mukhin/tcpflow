@@ -1,3 +1,8 @@
+2003-08-07  Jeremy Elson  <jelson@circlemud.org>
+
+	* src/main.c: Fixed format string attack.  Found by David
+	Goldsmith of atstake.com.
+	
 2002-03-29  Jeremy Elson  <jelson@concorde.cs.ucla.edu>
 
 	* configure.in: Fixed --with-pcap (was broken since moving sources

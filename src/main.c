@@ -8,6 +8,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.15  2003/08/07 07:35:24  jelson
+ * fixed format string attack
+ *
  * Revision 1.14  2001/08/08 19:39:40  jelson
  * ARGH!  These are changes that made up tcpflow 0.20, which for some reason I
  * did not check into the repository until now.  (Which of couse means
@@ -192,7 +195,7 @@ int main(int argc, char *argv[])
 
     /* open the capture file */
     if ((pd = pcap_open_offline(infile, error)) == NULL)
-      die(error);
+      die("%s", error);
 
     /* get the handler for this kind of packets */
     dlt = pcap_datalink(pd);
@@ -201,11 +204,11 @@ int main(int argc, char *argv[])
     /* if the user didn't specify a device, try to find a reasonable one */
     if (device == NULL)
       if ((device = pcap_lookupdev(error)) == NULL)
-	die(error);
+	die("%s", error);
 
     /* make sure we can open the device */
     if ((pd = pcap_open_live(device, SNAPLEN, !no_promisc, 1000, error)) == NULL)
-      die(error);
+      die("%s", error);
 
     /* drop root privileges - we don't need them any more */
     setuid(getuid());
@@ -251,10 +254,10 @@ int main(int argc, char *argv[])
 
   /* install the filter expression in libpcap */
   if (pcap_compile(pd, &fcode, expression, 1, 0) < 0)
-    die(pcap_geterr(pd));
+    die("%s", pcap_geterr(pd));
 
   if (pcap_setfilter(pd, &fcode) < 0)
-    die(pcap_geterr(pd));
+    die("%s", pcap_geterr(pd));
 
   /* initialize our flow state structures */
   init_flow_state();
@@ -269,7 +272,7 @@ int main(int argc, char *argv[])
   if (infile == NULL)
     DEBUG(1) ("listening on %s", device);
   if (pcap_loop(pd, -1, handler, NULL) < 0)
-    die(pcap_geterr(pd));
+    die("%s", pcap_geterr(pd));
 
   /* NOTREACHED */
   return 0;
