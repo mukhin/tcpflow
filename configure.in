@@ -54,10 +54,6 @@ When installing libpcap do both 'make install' and 'make install-incl'])
 
 dnl ############## Header Checks
 
-AC_HEADER_STDC
-AC_CHECK_HEADERS(string.h strings.h sys/resource.h sys/types.h unistd.h)
-AC_CHECK_HEADERS(sys/bitypes.h sys/socket.h netinet/tcp.h netinet/in_systm.h)
-
 AC_CHECK_HEADER(pcap.h, , [
 	AC_MSG_ERROR([
 Can't find pcap.h; install the pcap library (from
@@ -66,6 +62,12 @@ ftp://ftp.ee.lbl.gov/libpcap.tar.Z ) and/or use
 
 When installing libpcap do both 'make install' and 'make install-incl'])
 ])
+
+AC_HEADER_STDC
+AC_CHECK_HEADERS(string.h strings.h sys/resource.h sys/types.h unistd.h)
+AC_CHECK_HEADERS(sys/bitypes.h sys/socket.h netinet/tcp.h netinet/in_systm.h)
+AC_CHECK_HEADERS(netinet/tcp.h netinet/in.h netinet/ip.h net/if.h)
+AC_CHECK_HEADERS(netinet/if_ether.h linux/if_ether.h)
 
 dnl ############## Function checks
 

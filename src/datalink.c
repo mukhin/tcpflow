@@ -8,6 +8,13 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.4  1999/04/13 23:17:55  jelson
+ * More portability fixes.  All system header files now conditionally
+ * included from sysdep.h.
+ *
+ * Integrated patch from Johnny Tevessen <j.tevessen@gmx.net> for Linux
+ * systems still using libc5.
+ *
  * Revision 1.3  1999/04/13 01:38:10  jelson
  * Added portability features with 'automake' and 'autoconf'.  Added AUTHORS,
  * NEWS, README, etc files (currently empty) to conform to GNU standards.
@@ -21,10 +28,6 @@
 static char *cvsid = "$Id$";
 
 #include "tcpflow.h"
-
-#include <net/if.h>
-#include <netinet/in.h>
-#include <netinet/if_ether.h>
 
 
 

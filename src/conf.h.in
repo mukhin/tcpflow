@@ -18,8 +18,23 @@
 /* Define if you have the fgetpos function.  */
 #undef HAVE_FGETPOS
 
+/* Define if you have the <linux/if_ether.h> header file.  */
+#undef HAVE_LINUX_IF_ETHER_H
+
+/* Define if you have the <net/if.h> header file.  */
+#undef HAVE_NET_IF_H
+
+/* Define if you have the <netinet/if_ether.h> header file.  */
+#undef HAVE_NETINET_IF_ETHER_H
+
+/* Define if you have the <netinet/in.h> header file.  */
+#undef HAVE_NETINET_IN_H
+
 /* Define if you have the <netinet/in_systm.h> header file.  */
 #undef HAVE_NETINET_IN_SYSTM_H
+
+/* Define if you have the <netinet/ip.h> header file.  */
+#undef HAVE_NETINET_IP_H
 
 /* Define if you have the <netinet/tcp.h> header file.  */
 #undef HAVE_NETINET_TCP_H

@@ -8,6 +8,13 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.8  1999/04/13 23:17:55  jelson
+ * More portability fixes.  All system header files now conditionally
+ * included from sysdep.h.
+ *
+ * Integrated patch from Johnny Tevessen <j.tevessen@gmx.net> for Linux
+ * systems still using libc5.
+ *
  * Revision 1.7  1999/04/13 03:17:45  jelson
  * documentation updates
  *
@@ -24,12 +31,6 @@
 static char *cvsid = "$Id$";
 
 #define __MAIN_C__
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/time.h>
 
 #include "tcpflow.h"
 
@@ -143,7 +144,7 @@ int main(int argc, char *argv[])
 
   DEBUG(20) ("filter expression: '%s'", expression);
 
-  /* install the filter expression in BPF */
+  /* install the filter expression in libpcap */
   if (pcap_compile(pd, &fcode, expression, 1, 0) < 0)
     die(pcap_geterr(pd));
 

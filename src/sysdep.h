@@ -8,6 +8,13 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.2  1999/04/13 23:17:56  jelson
+ * More portability fixes.  All system header files now conditionally
+ * included from sysdep.h.
+ *
+ * Integrated patch from Johnny Tevessen <j.tevessen@gmx.net> for Linux
+ * systems still using libc5.
+ *
  * Revision 1.1  1999/04/13 01:38:13  jelson
  * Added portability features with 'automake' and 'autoconf'.  Added AUTHORS,
  * NEWS, README, etc files (currently empty) to conform to GNU standards.
@@ -36,11 +43,11 @@
 #include <errno.h>
 
 #ifdef HAVE_STRING_H
-#include <string.h>
+# include <string.h>
 #endif
 
 #ifdef HAVE_STRINGS_H
-#include <strings.h>
+# include <strings.h>
 #endif
 
 #ifdef HAVE_SYS_TYPES_H
@@ -78,12 +85,37 @@
 # include <sys/socket.h>
 #endif
 
+#ifdef HAVE_NET_IF_H
+# include <net/if.h>
+#endif
+
 #ifdef HAVE_NETINET_TCP_H
-#include <netinet/tcp.h>
+# include <netinet/tcp.h>
 #endif
 
 #ifdef HAVE_NETINET_IN_SYSTM_H
-#include <netinet/in_systm.h>
+# include <netinet/in_systm.h>
+#endif
+
+#ifdef HAVE_NETINET_IN_H
+# include <netinet/in.h>
+#endif
+
+#ifdef HAVE_NETINET_IP_H
+# include <netinet/ip.h>
+#endif
+
+#ifdef HAVE_NETINET_IF_ETHER_H
+# include <netinet/if_ether.h>
+#endif
+
+/* Linux libc5 systems have different names for certain structures.
+ * Patch sent by Johnny Tevessen <j.tevessen@gmx.net> */
+#if !defined(HAVE_NETINET_IF_ETHER_H) && defined(HAVE_LINUX_IF_ETHER_H)
+# include <linux/if_ether.h>
+# define ether_header ethhdr
+# define ether_type h_proto
+# define ETHERTYPE_IP ETH_P_IP
 #endif
 
 #include <pcap.h>
@@ -109,18 +141,20 @@
 #endif
 
 
-#ifndef SEEK_SET
-#define SEEK_SET 0
-#endif
-
-#
+/* some systems have fgetpos/fsetpos, a newer interface to ftell/fseek. */
 #ifdef HAVE_FGETPOS
-#define FGETPOS(file, position) fgetpos((file), (position))
-#define FSETPOS(file, position) fsetpos((file), (position))
+# define FGETPOS(file, position) fgetpos((file), (position))
+# define FSETPOS(file, position) fsetpos((file), (position))
 #else
-#define FGETPOS(file, position) *(position) = ftell(file)
-#define FSETPOS(file, position) fseek((file), (position), SEEK_SET)
-#endif
+
+/* some systems don't define SEEK_SET... sigh */
+# ifndef SEEK_SET
+#  define SEEK_SET 0
+# endif /* SEEK_SET */
+
+# define FGETPOS(file, position) *(position) = ftell(file)
+# define FSETPOS(file, position) fseek((file), (position), SEEK_SET)
+#endif /* HAVE_FGETPOS */
 
 #endif /* __SYSDEP_H__ */
 
