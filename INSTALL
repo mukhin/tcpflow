@@ -9,6 +9,7 @@ I've personally compiled and tested tcpflow 0.11 on the following platforms:
     Solaris 2.6
     SunOS 4.1.3
     SunOS 4.1.3 U1
+    IRIX 6.5
     Linux kernel 2.0.36, glibc2 (RedHat 5.2)
     Linux kernel 2.2.5, glibc2 (RedHat 5.2 with kernel 2.2 upgrade RPMs)
 

@@ -18,7 +18,7 @@
 	
 	* configure.in: Check for standards.h, for IRIX compatibility.
 	(I have a custom autoconf that I changed to automatically #include
-	standards.h, if the check succeeds, in future header file checks.
+	standards.h, if the check succeeds, in future header file checks.)
 	* sysdep.h: Conditional #include <standards.h> added.
 	
 	* configure.in: Only check for -lnsl if gethostbyaddr() doesn't
