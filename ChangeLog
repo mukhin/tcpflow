@@ -1,3 +1,21 @@
+1999-04-13  Jeremy Elson  <jelson@circlemud.org>
+
+	* sysdep.h: Linux libc5 systems have different names for certain
+	structures.  Patch sent by Johnny Tevessen <j.tevessen@gmx.net>
+	
+	* configure.in: All system header files are now detected by
+	autoconf and conditionally included in sysdep.h.
+	* sydep.h: Same.
+	* main.c: Same.
+	* tcpip.c: Same.
+
+	* Makefile.am (EXTRA_DIST): Changed from tcpflow.1 to tcpflow.1.in
+	to reflect the fact that tcpflow.1 is now created by 'configure'.
+	* configure.in: Same.
+	* tcpflow.1.in: Same.
+	
+	* AUTHORS: Created & added initial entries.
+
 1999-04-12  Jeremy Elson  <jelson@circlemud.org>
 
 	* Initial public release.

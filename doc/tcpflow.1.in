@@ -6,7 +6,7 @@ tcpflow \- TCP flow recorder
 .na
 .B tcpflow
 [\c
-.BI \-cpsv\fR\c
+.BI \-chpsv\fR\c
 ]
 [\c
 .BI \-b \ max_bytes\fR\c
@@ -83,6 +83,9 @@ default is for tcpflow to use the maximum number of file descriptors
 allowed by the OS.  The
 .B \-v
 option will report how many file descriptors tcpflow is using.
+.TP
+.B \-h
+Help.  Print usage information and exit.
 .TP
 .B \-i
 Interface name.  Capture packets from the network interface

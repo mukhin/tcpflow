@@ -8,6 +8,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.9  1999/04/14 00:20:45  jelson
+ * documentation updates, and added -h option to print usage information
+ *
  * Revision 1.8  1999/04/13 23:17:55  jelson
  * More portability fixes.  All system header files now conditionally
  * included from sysdep.h.
@@ -46,6 +49,26 @@ int strip_nonprint = 0;
 char error[PCAP_ERRBUF_SIZE];
 
 
+void print_usage(char *progname)
+{
+  fprintf(stderr, "%s version %s by Jeremy Elson <jelson@circlemud.org>\n\n",
+		 PACKAGE, VERSION);
+  fprintf(stderr, "usage: %s [-chpsv] [-b max_bytes] [-d debug_level] [-f max_fds]\n", progname);
+  fprintf(stderr, "          [-i iface] [expression]\n\n");
+  fprintf(stderr, "        -b: max number of bytes per flow to save\n");
+  fprintf(stderr, "        -c: console print only (don't create files)\n");
+  fprintf(stderr, "        -d: debug level; default is %d\n", DEFAULT_DEBUG_LEVEL);
+  fprintf(stderr, "        -f: maximum number of file descriptors to use\n");
+  fprintf(stderr, "        -h: print this help message\n");
+  fprintf(stderr, "        -i: network interface on which to listen\n");
+  fprintf(stderr, "            (type \"ifconfig -a\" for a list of interfaces)\n");
+  fprintf(stderr, "        -p: don't use promiscuous mode\n");
+  fprintf(stderr, "        -s: strip non-printable characters (change to '.')\n");
+  fprintf(stderr, "        -v: verbose operation equivalent to -d 10\n");
+  fprintf(stderr, "         expression: tcpdump-like filtering expression\n");
+  fprintf(stderr, "\nSee the man page for additional information.\n\n");
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -54,6 +77,7 @@ int main(int argc, char *argv[])
   extern int optopt;
   extern char *optarg;
   int arg;
+  int need_usage = 0;
 
   char *device = NULL;
   char *expression = NULL;
@@ -65,7 +89,7 @@ int main(int argc, char *argv[])
 
   opterr = 0;
 
-  while ((arg = getopt(argc, argv, "b:cd:f:i:psv")) != EOF) {
+  while ((arg = getopt(argc, argv, "b:cd:f:hi:psv")) != EOF) {
     switch (arg) {
     case 'b':
       if ((bytes_per_flow = atoi(optarg)) < 0) {
@@ -96,6 +120,10 @@ int main(int argc, char *argv[])
 	max_desired_fds = 0;
       }
       break;
+    case 'h':
+      print_usage(argv[0]);
+      exit(0);
+      break;
     case 'i':
       device = optarg;
       break;
@@ -105,13 +133,20 @@ int main(int argc, char *argv[])
       break;
     case 'v':
       debug_level = 10;
-      DEBUG(10) ("%s version %s by Jeremy Elson <jelson@circlemud.org>\n",
+      DEBUG(10) ("%s version %s by Jeremy Elson <jelson@circlemud.org>",
 		 PACKAGE, VERSION);
       break;
     default:
-      DEBUG(1) ("warning: unrecognized switch '%c'", optopt);
+      DEBUG(1) ("error: unrecognized switch '%c'", optopt);
+      need_usage = 1;
       break;
     }
+  }
+
+  /* print help and exit if there was an error in the arguments */
+  if (need_usage) {
+    print_usage(argv[0]);
+    exit(1);
   }
 
   /* if the user didn't specify a device, try to find a reasonable one */
