@@ -205,10 +205,10 @@ int get_max_fds(void)
 
   /* this must go here, after rlimit code */
   if (max_desired_fds) {
-    DEBUG(2) ("using only %d FDs", max_desired_fds);
+    DEBUG(10) ("using only %d FDs", max_desired_fds);
     return max_desired_fds;
   }
 
-  DEBUG(2) ("found max FDs to be %d using %s", max_descs, method);
+  DEBUG(10) ("found max FDs to be %d using %s", max_descs, method);
   return max_descs;
 }

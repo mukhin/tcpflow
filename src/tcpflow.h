@@ -107,6 +107,7 @@ void process_tcp(const char *data, u_int32_t length, u_int32_t src,
 void print_packet(flow_t flow, const char *data, u_int32_t length);
 void store_packet(flow_t flow, const char *data, u_int32_t length,
 		  u_int32_t seq);
+char *do_strip_nonprint(const char *data, u_int32_t length);
 
 /* flow.c */
 void init_flow_state();

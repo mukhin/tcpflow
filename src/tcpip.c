@@ -12,6 +12,7 @@
 
 extern int console_only;
 extern int bytes_per_flow;
+extern int strip_nonprint;
 
 /*************************************************************************/
 
@@ -96,32 +97,56 @@ void process_tcp(const char *data, u_int32_t length, u_int32_t src,
   this_flow.dport = ntohs(tcp_header->th_dport);
   seq = ntohl(tcp_header->th_seq);
 
-  /*  printf("%s: %d\n", flow_filename(this_flow), HASH_FLOW(this_flow)); */
+  /* recalculate the beginning of data and its length, moving past the
+   * TCP header */
+  data += tcp_header_len;
+  length -= tcp_header_len;
 
+  /* strip nonprintable characters if necessary */
+  if (strip_nonprint)
+    data = do_strip_nonprint(data, length);
+
+  /* store or print the output */
   if (console_only) {
-    print_packet(this_flow, data+tcp_header_len, length - tcp_header_len);
+    print_packet(this_flow, data, length);
   } else {
-    store_packet(this_flow, data+tcp_header_len, length - tcp_header_len, seq);
+    store_packet(this_flow, data, length, seq);
   }
 }
 
 
+/* convert all non-printable characters to '.' (period).  not
+ * thread-safe, obviously, but neither is most of the rest of this. */
+char *do_strip_nonprint(const char *data, u_int32_t length)
+{
+  static char buf[SNAPLEN];
+  char *write_ptr;
+
+  write_ptr = buf;
+  while (length) {
+    if (isprint(*data) || (*data == '\n') || (*data == '\r'))
+      *write_ptr = *data;
+    else
+      *write_ptr = '.';
+    write_ptr++;
+    data++;
+    length--;
+  }
+
+  return buf;
+}
+
+
+/* print the contents of this packet to the console */
 void print_packet(flow_t flow, const char *data, u_int32_t length)
 {
   printf("%s: ", flow_filename(flow));
-  while (length) {
-    if (isprint(*data) || *data == '\n' || *data == '\r')
-      putchar(*data);
-    else
-      putchar('.');
-    length--;
-    data++;
-  }
+  fwrite(data, length, 1, stdout);
   putchar('\n');
 }
 
 
-
+/* store the contents of this packet to its place in its file */
 void store_packet(flow_t flow, const char *data, u_int32_t length,
 		  u_int32_t seq)
 {

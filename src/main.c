@@ -15,6 +15,7 @@ int bytes_per_flow = 0;
 int max_flows = 0;
 int max_desired_fds = 0;
 int console_only = 0;
+int strip_nonprint = 0;
 
 char error[PCAP_ERRBUF_SIZE];
 
@@ -38,7 +39,7 @@ int main(int argc, char *argv[])
 
   opterr = 0;
 
-  while ((arg = getopt(argc, argv, "b:cd:f:i:pv")) != EOF) {
+  while ((arg = getopt(argc, argv, "b:cd:f:i:psv")) != EOF) {
     switch (arg) {
     case 'b':
       if ((bytes_per_flow = atoi(optarg)) < 0) {
@@ -51,6 +52,10 @@ int main(int argc, char *argv[])
     case 'c':
       console_only = 1;
       DEBUG(10) ("printing packets to console only");
+      /* fall through */
+    case 's':
+      strip_nonprint = 1;
+      DEBUG(10) ("converting non-printable characters to '.'");
       break;
     case 'd':
       if ((debug_level = atoi(optarg)) <= 0) {
