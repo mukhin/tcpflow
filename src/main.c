@@ -8,6 +8,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.7  1999/04/13 03:17:45  jelson
+ * documentation updates
+ *
  * Revision 1.6  1999/04/13 01:38:12  jelson
  * Added portability features with 'automake' and 'autoconf'.  Added AUTHORS,
  * NEWS, README, etc files (currently empty) to conform to GNU standards.
@@ -101,6 +104,8 @@ int main(int argc, char *argv[])
       break;
     case 'v':
       debug_level = 10;
+      DEBUG(10) ("%s version %s by Jeremy Elson <jelson@circlemud.org>\n",
+		 PACKAGE, VERSION);
       break;
     default:
       DEBUG(1) ("warning: unrecognized switch '%c'", optopt);
