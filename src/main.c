@@ -8,6 +8,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.10  1999/04/14 22:19:56  jelson
+ * cosmetic change to help screen
+ *
  * Revision 1.9  1999/04/14 00:20:45  jelson
  * documentation updates, and added -h option to print usage information
  *
@@ -65,7 +68,7 @@ void print_usage(char *progname)
   fprintf(stderr, "        -p: don't use promiscuous mode\n");
   fprintf(stderr, "        -s: strip non-printable characters (change to '.')\n");
   fprintf(stderr, "        -v: verbose operation equivalent to -d 10\n");
-  fprintf(stderr, "         expression: tcpdump-like filtering expression\n");
+  fprintf(stderr, "expression: tcpdump-like filtering expression\n");
   fprintf(stderr, "\nSee the man page for additional information.\n\n");
 }
 
