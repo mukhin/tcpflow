@@ -1,3 +1,12 @@
+1999-04-14  Jeremy Elson  <jelson@circlemud.org>
+
+	* tcpip.c (store_packet): Now correctly checking the return value
+	of fwrite().  Pointed out by Johnny Tevessen <j.tevessen@gmx.net>.
+
+1999-04-13  Jeremy Elson  <jelson@circlemud.org>
+
+	* Released version 0.11.
+	
 1999-04-13  Jeremy Elson  <jelson@circlemud.org>
 
 	* tcpip.c (process_ip): Portability: added typecast of an int to a

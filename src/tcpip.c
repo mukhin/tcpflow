@@ -8,6 +8,9 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.8  1999/04/14 17:59:59  jelson
+ * now correctly checking the return value of fwrite
+ *
  * Revision 1.7  1999/04/14 03:02:39  jelson
  * added typecasts for portability
  *
@@ -230,7 +233,7 @@ void store_packet(flow_t flow, const char *data, u_int32_t length,
   DEBUG(11) ("%s: writing %ld bytes @%ld", flow_filename(state->flow),
 	  (long) length, (long) offset);
 
-  if (fwrite(data, length, 1, state->fp) < 0) {
+  if (fwrite(data, length, 1, state->fp) < length) {
     /* sigh... this should be a nice, plain DEBUG statement that
      * passes strerrror() as an argument, but SunOS 4.1.3 doesn't seem
      * to have strerror. */
