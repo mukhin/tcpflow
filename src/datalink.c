@@ -8,6 +8,10 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.7  2002/03/29 22:31:16  jelson
+ * Added support for ISDN (/dev/ippp0), datalink handler for
+ * DLT_LINUX_SLL.  Contributed by Detlef Conradin <dconradin at gmx.net>
+ *
  * Revision 1.6  1999/04/21 01:40:13  jelson
  * DLT_NULL fixes, u_char fixes, additions to configure.in, man page update
  *
@@ -147,6 +151,25 @@ void dl_raw(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
   process_ip(p, caplen);
 }
 
+#define SLL_HDR_LEN       16
+
+void dl_linux_sll(u_char *user, const struct pcap_pkthdr *h, const u_char *p){
+  u_int caplen = h->caplen;
+  u_int length = h->len;
+
+  if (length != caplen) {
+    DEBUG(6) ("warning: only captured %d bytes of %d byte Linux cooked frame",
+	      caplen, length);
+  }
+
+  if (caplen < SLL_HDR_LEN) {
+    DEBUG(6) ("warning: received incomplete Linux cooked frame");
+    return;
+  }
+  
+  process_ip(p + SLL_HDR_LEN, caplen - SLL_HDR_LEN);
+}
+
 
 pcap_handler find_handler(int datalink_type, char *device)
 {
@@ -163,6 +186,9 @@ pcap_handler find_handler(int datalink_type, char *device)
     { dl_ethernet, DLT_EN10MB },
     { dl_ethernet, DLT_IEEE802 },
     { dl_ppp, DLT_PPP },
+#ifdef DLT_LINUX_DLL
+    { dl_linux_sll, DLT_LINUX_SLL },
+#endif
     { NULL, 0 },
   };
 
