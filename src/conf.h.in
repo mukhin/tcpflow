@@ -1,5 +1,8 @@
 /* conf.h.in.  Generated automatically from configure.in by autoheader.  */
 
+/* Define as the return type of signal handlers (int or void).  */
+#undef RETSIGTYPE
+
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
@@ -24,6 +27,12 @@
 /* Define if you have the fgetpos function.  */
 #undef HAVE_FGETPOS
 
+/* Define if you have the sigaction function.  */
+#undef HAVE_SIGACTION
+
+/* Define if you have the sigset function.  */
+#undef HAVE_SIGSET
+
 /* Define if you have the <linux/if_ether.h> header file.  */
 #undef HAVE_LINUX_IF_ETHER_H
 
@@ -47,6 +56,9 @@
 
 /* Define if you have the <pcap.h> header file.  */
 #undef HAVE_PCAP_H
+
+/* Define if you have the <signal.h> header file.  */
+#undef HAVE_SIGNAL_H
 
 /* Define if you have the <standards.h> header file.  */
 #undef HAVE_STANDARDS_H

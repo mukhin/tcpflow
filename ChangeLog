@@ -1,5 +1,11 @@
 2001-02-26  Jeremy Elson  <jelson@circlemud.org>
 
+	* Released version 0.20.
+	
+	* util.c, main.c: we now catch SIGTERM, SIGINT and SIGHUP, and
+	call exit().  Should give libpcap a chance to reset the interface
+	state (it calls onexit()).
+	
 	* main.c, tcpflow.1.in: Added patch from "Jose M. Alcaide"
 	<jose@we.lc.ehu.es> (FreeBSD port maintainer) so that tcpflow can
 	read from tcpdump output files.

@@ -1,6 +1,14 @@
 Version 0.20 (February 26, 2001):
 
-* -r option contributed by Jose M. Alcaide <jose@we.lc.ehu.es>,
+* A bug was fixed that caused out-of-order reassembly to generate
+seemingly very large files on some systems (specifically, those that
+support fgetpos/fsetpos).
+
+* Bug fixed that caused the interface to be left in promiscuous mode
+after tcpflow terminated
+
+* The -r option was added, contributed by Jose M. Alcaide
+<jose@we.lc.ehu.es>
 
 * We now distribute tcpflow RPMs, thanks to a spec file submitted by
   Ross Golder <rossigee@bigfoot.com>.

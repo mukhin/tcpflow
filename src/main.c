@@ -8,6 +8,17 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.14  2001/08/08 19:39:40  jelson
+ * ARGH!  These are changes that made up tcpflow 0.20, which for some reason I
+ * did not check into the repository until now.  (Which of couse means
+ * I never tagged v0.20.... argh.)
+ *
+ * Changes include:
+ *
+ *   -- portable signal handlers now used to do proper termination
+ *
+ *   -- patch to allow tcpflow to read from tcpdump stored captures
+ *
  * Revision 1.13  2001/02/26 23:01:30  jelson
  * Added patch for -r option
  *
@@ -80,6 +91,13 @@ void print_usage(char *progname)
   fprintf(stderr, "        -v: verbose operation equivalent to -d 10\n");
   fprintf(stderr, "expression: tcpdump-like filtering expression\n");
   fprintf(stderr, "\nSee the man page for additional information.\n\n");
+}
+
+
+RETSIGTYPE terminate(int sig)
+{
+  DEBUG(1) ("terminating");
+  exit(0); /* libpcap uses onexit to clean up */
 }
 
 
@@ -240,6 +258,12 @@ int main(int argc, char *argv[])
 
   /* initialize our flow state structures */
   init_flow_state();
+
+  /* set up signal handlers for graceful exit (pcap uses onexit to put
+     interface back into non-promiscuous mode */
+  portable_signal(SIGTERM, terminate);
+  portable_signal(SIGINT, terminate);
+  portable_signal(SIGHUP, terminate);
 
   /* start listening! */
   if (infile == NULL)

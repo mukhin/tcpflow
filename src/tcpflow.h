@@ -8,6 +8,17 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.10  2001/08/08 19:39:40  jelson
+ * ARGH!  These are changes that made up tcpflow 0.20, which for some reason I
+ * did not check into the repository until now.  (Which of couse means
+ * I never tagged v0.20.... argh.)
+ *
+ * Changes include:
+ *
+ *   -- portable signal handlers now used to do proper termination
+ *
+ *   -- patch to allow tcpflow to read from tcpdump stored captures
+ *
  * Revision 1.9  2000/12/08 07:32:39  jelson
  * Took out the (broken) support for fgetpos/fsetpos.  Now we always simply
  * use fseek and ftell.
@@ -101,6 +112,7 @@ void init_debug(char *argv[]);
 void *check_malloc(size_t size);
 char *flow_filename(flow_t flow);
 int get_max_fds(void);
+RETSIGTYPE (*portable_signal(int signo, RETSIGTYPE (*func)(int)))(int);
 void debug_real(char *fmt, ...)
 #ifdef __GNUC__
                 __attribute__ ((format (printf, 1, 2)))

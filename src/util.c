@@ -8,6 +8,17 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.9  2001/08/08 19:39:40  jelson
+ * ARGH!  These are changes that made up tcpflow 0.20, which for some reason I
+ * did not check into the repository until now.  (Which of couse means
+ * I never tagged v0.20.... argh.)
+ *
+ * Changes include:
+ *
+ *   -- portable signal handlers now used to do proper termination
+ *
+ *   -- patch to allow tcpflow to read from tcpdump stored captures
+ *
  * Revision 1.8  1999/04/14 03:02:39  jelson
  * added typecasts for portability
  *
@@ -225,4 +236,37 @@ int get_max_fds(void)
 
   DEBUG(10) ("found max FDs to be %d using %s", max_descs, method);
   return max_descs;
+}
+
+
+/* An attempt at making signal() portable.
+ *
+ * If we detect sigaction, use that; 
+ * otherwise if we have setsig, use that;
+ * otherwise, cross our fingers and hope for the best using plain old signal().
+ *
+ * Our first choice is sigaction (sigaction() is POSIX; signal() is
+ * not.)  Taken from Stevens' _Advanced Programming in the UNIX
+ * Environment_.
+ */
+RETSIGTYPE (*portable_signal(int signo, RETSIGTYPE (*func)(int)))(int)
+{
+#if defined(HAVE_SIGACTION)
+  struct sigaction act, oact;
+
+  memset(&act, 0, sizeof(act));
+  memset(&oact, 0, sizeof(oact));
+  act.sa_handler = func;
+  sigemptyset(&act.sa_mask);
+  act.sa_flags = 0;
+
+  if (sigaction(signo, &act, &oact) < 0)
+    return (SIG_ERR);
+
+  return (oact.sa_handler);
+#elif defined(HAVE_SIGSET)
+  return sigset(signo, func);
+#else
+  return signal(signo, func);
+#endif /* HAVE_SIGACTION, HAVE_SIGSET */
 }

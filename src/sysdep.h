@@ -8,6 +8,17 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.5  2001/08/08 19:39:40  jelson
+ * ARGH!  These are changes that made up tcpflow 0.20, which for some reason I
+ * did not check into the repository until now.  (Which of couse means
+ * I never tagged v0.20.... argh.)
+ *
+ * Changes include:
+ *
+ *   -- portable signal handlers now used to do proper termination
+ *
+ *   -- patch to allow tcpflow to read from tcpdump stored captures
+ *
  * Revision 1.4  2000/12/08 07:32:39  jelson
  * Took out the (broken) support for fgetpos/fsetpos.  Now we always simply
  * use fseek and ftell.
@@ -129,6 +140,10 @@
 # define ETHERTYPE_IP ETH_P_IP
 #endif
 
+#ifdef HAVE_SIGNAL_H
+# include <signal.h>
+#endif
+
 #include <pcap.h>
 
 
@@ -151,13 +166,6 @@
 # endif
 #endif
 
-
-#if 0
-/* some systems have fgetpos/fsetpos, a newer interface to ftell/fseek. */
-# define FGETPOS(file, position) fgetpos((file), (position))
-# define FSETPOS(file, position) fsetpos((file), (position))
-#endif
-
 /* some systems don't define SEEK_SET... sigh */
 #ifndef SEEK_SET
 # define SEEK_SET 0
@@ -165,6 +173,7 @@
 
 #define FGETPOS(file, position) *(position) = ftell(file)
 #define FSETPOS(file, position) fseek((file), (*position), SEEK_SET)
+
 
 #endif /* __SYSDEP_H__ */
 

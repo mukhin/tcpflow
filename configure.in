@@ -94,13 +94,17 @@ AC_CHECK_HEADERS(string.h strings.h sys/resource.h sys/types.h unistd.h)
 AC_CHECK_HEADERS(sys/bitypes.h sys/socket.h netinet/tcp.h netinet/in_systm.h)
 AC_CHECK_HEADERS(netinet/in.h netinet/ip.h net/if.h)
 AC_CHECK_HEADERS(netinet/if_ether.h linux/if_ether.h)
+AC_CHECK_HEADERS(signal.h)
 
 dnl ############## Function checks
 
 AC_CHECK_FUNCS(fgetpos)
+AC_CHECK_FUNCS(sigaction)
+AC_CHECK_FUNCS(sigset)
 
 dnl ############## Type checks
 
+AC_TYPE_SIGNAL
 AC_CHECK_TYPE(u_int32_t, unsigned long)
 AC_CHECK_TYPE(u_int16_t, unsigned short)
 AC_CHECK_TYPE(u_int8_t, unsigned char)
