@@ -8,6 +8,12 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.13  2001/08/24 05:36:14  jelson
+ * fflush stdout in console print mode, from suggestion of Andreas
+ * Schweitzer <andy@physast.uga.edu>, who says "Otherwise, I can't
+ * redirect or pipe the console output. At least on FreeBSD. I will check
+ * later today if this also cures the same problems I had on OpenBSD."
+ *
  * Revision 1.12  2000/12/08 07:32:39  jelson
  * Took out the (broken) support for fgetpos/fsetpos.  Now we always simply
  * use fseek and ftell.
@@ -185,6 +191,7 @@ void print_packet(flow_t flow, const u_char *data, u_int32_t length)
   printf("%s: ", flow_filename(flow));
   fwrite(data, length, 1, stdout);
   putchar('\n');
+  fflush(stdout);
 }
 
 

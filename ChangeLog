@@ -1,3 +1,12 @@
+2001-08-23  Jeremy Elson  <jelson@circlemud.org>
+
+	* src/tcpip.c: fflush stdout in console print mode, from
+	suggestion of Andreas Schweitzer <andy@physast.uga.edu>, who says
+	"Otherwise, I can't redirect or pipe the console output. At least
+	on FreeBSD. I will check later today if this also cures the same
+	problems I had on OpenBSD."
+	
+
 2001-02-26  Jeremy Elson  <jelson@circlemud.org>
 
 	* Released version 0.20.
