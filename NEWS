@@ -3,16 +3,17 @@ Version 0.12 (April 20, 1999):
 * Now compiles under IRIX, and using non-GCC compilers.
 
 * Workaround for the Linux/libpcap bug that prevented tcpflow from
-  listening to packets on the loopback interface.  It's not perfect;
-  it's impossible libpcap's filtering doesn't work; so, when using Linux
-  to listen to the loopback interface, *all* flows on that interface are
-  recorded.  Someday I may try to fix either libpcap or the Linux
-  kernel so that this workaround is not necessary.
+  listening to packets on the Linux loopback interface.  It's not
+  perfect -- it appears impossible to install a libpcap filtering
+  expression when listening to the Linux loopback interface.  Thus,
+  *all* flows on that interface are recorded.  Someday I may try to
+  fix either libpcap or the Linux kernel so that this workaround is
+  not necessary.
 
 
 Version 0.11 (April 13, 1999):
 
-* Support for older (libc5) Linux systems (submited by Johnny Tevessen
+* Support for older (libc5) Linux systems (submitted by Johnny Tevessen
   <j.tevessen@gmx.net>).
 
 * Some minor fixes.

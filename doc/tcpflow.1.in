@@ -1,5 +1,5 @@
 .\"$Id$"
-.TH tcpflow 1 "13 April 1999" "tcpflow @VERSION@" "tcpflow @VERSION@"
+.TH tcpflow 1 "20 April 1999" "tcpflow @VERSION@" "tcpflow @VERSION@"
 .SH NAME
 tcpflow \- TCP flow recorder 
 .SH SYNOPSIS
@@ -27,12 +27,12 @@ tcpflow \- TCP flow recorder
 .LP
 .B tcpflow
 is a program that captures data transmitted as part of TCP connections
-(flows), and stores it in a way that is convenient for protocol
+(flows), and stores the data in a way that is convenient for protocol
 analysis or debugging.  A program like
-.IR tcpdump (4)
-only shows a summary of packets seen on the wire, but usually doesn't
-store the data that's actually being transmitted.  In contrast,
-tcpflow reconstructs the actual data streams and stores each flow in a
+.IR tcpdump(4)
+shows a summary of packets seen on the wire, but usually doesn't store
+the data that's actually being transmitted.  In contrast, tcpflow
+reconstructs the actual data streams and stores each flow in a
 separate file for later analysis.  tcpflow understands TCP sequence
 numbers and will correctly reconstruct data streams regardless of
 retransmissions or out-of-order delivery.
@@ -513,9 +513,10 @@ will grow large if used to capture a very large number of flows (e.g.,
 on the order of 100,000 flows or more).
 .LP
 There appears to be a bug in the way that Linux delivers packets to
-libpcap when using the loopback interface ("localhost").  In these
-situations, selective packet filtering is not possible; all TCP flows
-on the localhost interface will be recorded.
+libpcap when using the loopback interface ("localhost").  When
+listening to the Linux loopback interface, selective packet filtering
+is not possible; all TCP flows on the localhost interface will be
+recorded.
 .SH AUTHOR
 Jeremy Elson <jelson@circlemud.org>
 .LP
