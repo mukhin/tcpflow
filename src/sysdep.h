@@ -8,6 +8,10 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.4  2000/12/08 07:32:39  jelson
+ * Took out the (broken) support for fgetpos/fsetpos.  Now we always simply
+ * use fseek and ftell.
+ *
  * Revision 1.3  1999/04/21 01:40:14  jelson
  * DLT_NULL fixes, u_char fixes, additions to configure.in, man page update
  *
@@ -148,20 +152,19 @@
 #endif
 
 
+#if 0
 /* some systems have fgetpos/fsetpos, a newer interface to ftell/fseek. */
-#ifdef HAVE_FGETPOS
 # define FGETPOS(file, position) fgetpos((file), (position))
 # define FSETPOS(file, position) fsetpos((file), (position))
-#else
+#endif
 
 /* some systems don't define SEEK_SET... sigh */
-# ifndef SEEK_SET
-#  define SEEK_SET 0
-# endif /* SEEK_SET */
+#ifndef SEEK_SET
+# define SEEK_SET 0
+#endif /* SEEK_SET */
 
-# define FGETPOS(file, position) *(position) = ftell(file)
-# define FSETPOS(file, position) fseek((file), (position), SEEK_SET)
-#endif /* HAVE_FGETPOS */
+#define FGETPOS(file, position) *(position) = ftell(file)
+#define FSETPOS(file, position) fseek((file), (*position), SEEK_SET)
 
 #endif /* __SYSDEP_H__ */
 

@@ -8,6 +8,10 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.9  2000/12/08 07:32:39  jelson
+ * Took out the (broken) support for fgetpos/fsetpos.  Now we always simply
+ * use fseek and ftell.
+ *
  * Revision 1.8  1999/04/21 01:40:16  jelson
  * DLT_NULL fixes, u_char fixes, additions to configure.in, man page update
  *
@@ -59,7 +63,7 @@ typedef struct flow_state_struct {
   flow_t flow;			/* Description of this flow */
   tcp_seq isn;			/* Initial sequence number we've seen */
   FILE *fp;			/* Pointer to file storing this flow's data */
-  fpos_t pos;			/* Current write position in fp */
+  long pos;			/* Current write position in fp */
   int flags;			/* Don't save any more data from this flow */
   int last_access;		/* "Time" of last access */
 } flow_state_struct;

@@ -8,6 +8,10 @@
  * $Id$
  *
  * $Log$
+ * Revision 1.12  2000/12/08 07:32:39  jelson
+ * Took out the (broken) support for fgetpos/fsetpos.  Now we always simply
+ * use fseek and ftell.
+ *
  * Revision 1.11  1999/04/21 01:40:16  jelson
  * DLT_NULL fixes, u_char fixes, additions to configure.in, man page update
  *
@@ -190,7 +194,7 @@ void store_packet(flow_t flow, const u_char *data, u_int32_t length,
 {
   flow_state_t *state;
   tcp_seq offset;
-  fpos_t fpos;
+  long fpos;
 
   /* see if we have state about this flow; if not, create it */
   if ((state = find_flow_state(flow)) == NULL) {
