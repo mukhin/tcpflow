@@ -41,7 +41,7 @@ host 128.129.131.131 port 2345, to host 10.11.12.13 port 45103.
 
 I originally wrote this program to capture the data being sent by
 various programs that use undocumented network protocols in an attempt
-to reverse engineer those protocol.  RealPlayer (and most other
+to reverse engineer those protocols.  RealPlayer (and most other
 streaming media players), ICQ, and AOL IM are good examples of this
 type of application.
 
@@ -49,7 +49,7 @@ In tinkering with it, I later also found tcpflow to be useful for
 checking to see what cookies my browser was sending to various sites,
 looking at the MIME headers of HTTP requests people are sending to my
 web server, and verifying that various connections to my machine that
-were supposed to be encrypted actually *were*.
+were supposed to be encrypted actually *were* encrypted.
 
 
 == Security Implications
@@ -70,7 +70,8 @@ specifically designed to do network-based intrusion detection.  Also,
 you should be aware that there are certain problems that make network
 intrusion detectors inherently unreliable in the face of a
 sufficiently advanced attacker; for more information, see
-http://www.secnet.com/papers/ids-html/ .
+http://www.secnet.com/papers/ids-html/  or
+http://www.circlemud.org/~jelson/writings/security/ .
 
 
 Jeremy Elson
