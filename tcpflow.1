@@ -1,4 +1,5 @@
-.TH tcpflow 1 "12 April 1999" "tcpflow @VERSION@" "tcpflow @VERSION@"
+.\"$Id$"
+.TH tcpflow 1 "13 April 1999" "tcpflow 0.11" "tcpflow 0.11"
 .SH NAME
 tcpflow \- TCP flow recorder 
 .SH SYNOPSIS
@@ -32,13 +33,11 @@ analysis or debugging.  A program like
 only shows a summary of packets seen on the wire, but usually doesn't
 store the data that's actually being transmitted.  In contrast,
 tcpflow reconstructs the actual data streams and stores each flow in a
-separate file for later analysis.
-.B tcpflow
-understands TCP sequence numbers and will correctly reconstruct data
-streams regardless of retransmissions or out-of-order delivery.
+separate file for later analysis.  tcpflow understands TCP sequence
+numbers and will correctly reconstruct data streams regardless of
+retransmissions or out-of-order delivery.
 .LP
-.B tcpflow
-stores all captured data in files that have names of the form
+tcpflow stores all captured data in files that have names of the form
 .in +.5i
 .nf
 192.168.101.102.02345-010.011.012.013.45103
@@ -74,14 +73,16 @@ Numbers higher than 10 can produce a large
 amount of debugging information useful only to developers.
 .TP
 .B \-f
-Max FDs used.  Limit the maximum number of file descriptors used by
-.B tcpflow
-to \fImax_fds\fP.  Higher numbers use more system resources but
-usually perform better.  If the underlying OS supports the
+Max file descriptors used.  Limit the number of file descriptors used
+by tcpflow to \fImax_fds\fP.  Higher numbers use more system
+resources, but usually perform better.  If the underlying operating
+system supports the
 .B setrlimit()
-system call, this OS will be asked to enforce this limit.  The default
-is for tcpflow to use the maximum number of file descriptors allowed
-by the OS.
+system call, the OS will be asked to enforce the requested limit.  The
+default is for tcpflow to use the maximum number of file descriptors
+allowed by the OS.  The
+.B \-v
+option will report how many file descriptors tcpflow is using.
 .TP
 .B \-i
 Interface name.  Capture packets from the network interface
@@ -112,9 +113,8 @@ Equivalent to
 The
 .B expression
 specified on the command-line specifies which packets should be
-captured.  Thanks to the power of the libpcap library,
-.B tcpflow
-has the same powerful filtering language available as programs such as 
+captured.  Because tcpflow uses the the libpcap library, tcpflow has
+the same powerful filtering language available as programs such as
 .IR tcpdump (4).
 .LP
 .B The following part of the man page is excerpted from the tcpdump man page.
@@ -502,14 +502,12 @@ tcpflow 'gateway snup and (port ftp or ftp-data)'
 .SH BUGS
 Please send bug reports to jelson@circlemud.org.
 .LP
-.B tcpflow
-currently does not understand IP fragments.  Flows containing IP
-fragments will not be recorded correctly.
+tcpflow currently does not understand IP fragments.  Flows containing
+IP fragments will not be recorded correctly.
 .LP
-.B tcpflow
-never frees state associated with flows that it records, so will grow
-large if used to capture a very large number of flows (e.g., on the
-order of 100,000 flows or more).
+tcpflow never frees state associated with flows that it records, so
+will grow large if used to capture a very large number of flows (e.g.,
+on the order of 100,000 flows or more).
 .SH AUTHOR
 Jeremy Elson <jelson@circlemud.org>
 .LP

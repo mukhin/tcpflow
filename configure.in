@@ -1,5 +1,5 @@
 AC_INIT(tcpflow.h)
-AM_INIT_AUTOMAKE(tcpflow, 0.10)
+AM_INIT_AUTOMAKE(tcpflow, 0.11)
 AM_CONFIG_HEADER(conf.h)
 
 dnl ############# Compiler Check
@@ -80,4 +80,5 @@ AC_CHECK_TYPE(fpos_t, long)
 
 dnl ############## Final Output
 
-AC_OUTPUT(Makefile)
+AC_OUTPUT(Makefile tcpflow.1)
+

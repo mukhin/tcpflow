@@ -64,12 +64,12 @@ VERSION = @VERSION@
 
 bin_PROGRAMS = tcpflow
 tcpflow_SOURCES = datalink.c flow.c main.c tcpip.c util.c sysdep.h tcpflow.h
-EXTRA_DIST = tcpflow.1
+EXTRA_DIST = tcpflow.1.in
 man_MANS = tcpflow.1
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = conf.h
-CONFIG_CLEAN_FILES = 
+CONFIG_CLEAN_FILES =  tcpflow.1
 PROGRAMS =  $(bin_PROGRAMS)
 
 
@@ -91,7 +91,8 @@ MANS = $(man_MANS)
 NROFF = nroff
 DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING ChangeLog INSTALL \
 Makefile.am Makefile.in NEWS acconfig.h acinclude.m4 aclocal.m4 \
-conf.h.in configure configure.in install-sh missing mkinstalldirs
+conf.h.in configure configure.in install-sh missing mkinstalldirs \
+tcpflow.1.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -148,6 +149,8 @@ distclean-hdr:
 	-rm -f conf.h
 
 maintainer-clean-hdr:
+tcpflow.1: $(top_builddir)/config.status tcpflow.1.in
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 mostlyclean-binPROGRAMS:
 
