@@ -144,19 +144,22 @@ FILE *open_file(flow_state_t *flow_state)
     return NULL;
   }
 
-  /* Decide which FD slot we get, and close the file that's there if
-   * any.  Note that even if flow_state is not NULL, its associated
-   * file pointer may already be closed.  Note well that we DO NOT
-   * free the state that we find in our slot; the state stays around
-   * forever (pointed to by the hash table).  This table only keeps a
-   * pointer to state structures that have open files so that we can
-   * close them later.
+  /* Now we decide which FD slot we use, and close the file that's
+   * there (if any).  Note that even if flow_state is not NULL, its
+   * associated file pointer may already be closed.  Note well that we
+   * DO NOT free the state that we find in our slot; the state stays
+   * around forever (pointed to by the hash table).  This table only
+   * keeps a pointer to state structures that have open files so that
+   * we can close them later.
    *
    * We are putting the close after the open so that we don't bother
    * closing files if the open fails.  (For this, we pay a price of
    * needing to keep a spare, idle FD around.) */
+
   if (++next_slot == max_fds) {
-    /* sort to sort of do LRU every time we get to the end */
+    /* take this opportunity to sort from oldest to newest --
+     * optimally we'd like to do this before every close, but that
+     * might take too long. */
     sort_fds();
     next_slot = 0;
   }
@@ -167,7 +170,6 @@ FILE *open_file(flow_state_t *flow_state)
 
   /* put ourslves in its place */
   fd_ring[next_slot] = flow_state;
-  DEBUG(5) ("....slot %d", next_slot);
 
   /* set flags and remember where in the file we are */
   SET_BIT(flow_state->flags, FLOW_FILE_EXISTS);
