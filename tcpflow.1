@@ -1,17 +1,14 @@
-.TH tcpflow 1 "12 April 1999"
+.TH tcpflow 1 "12 April 1999" "tcpflow @VERSION@" "tcpflow @VERSION@"
 .SH NAME
 tcpflow \- TCP flow recorder 
 .SH SYNOPSIS
 .na
 .B tcpflow
 [\c
-.BI \-dpsv\fR\c
+.BI \-cpsv\fR\c
 ]
 [\c
 .BI \-b \ max_bytes\fR\c
-]
-[\c
-.BI \-c\fR\c
 ]
 [\c
 .BI \-d \ debug_level\fR\c
@@ -28,16 +25,16 @@ tcpflow \- TCP flow recorder
 .SH DESCRIPTION
 .LP
 .B tcpflow
-tcpflow is a program that captures data transmitted as part of TCP
-connections (flows), and stores it in a way that is convenient for
-protocol analysis or debugging.  A program like
+is a program that captures data transmitted as part of TCP connections
+(flows), and stores it in a way that is convenient for protocol
+analysis or debugging.  A program like
 .IR tcpdump (4)
 only shows a summary of packets seen on the wire, but usually doesn't
 store the data that's actually being transmitted.  In contrast,
 tcpflow reconstructs the actual data streams and stores each flow in a
 separate file for later analysis.
 .B tcpflow
-understands sequence numbers and will correctly reconstruct data
+understands TCP sequence numbers and will correctly reconstruct data
 streams regardless of retransmissions or out-of-order delivery.
 .LP
 .B tcpflow
@@ -54,7 +51,7 @@ host 192.168.101.102 port 2345, to host 10.11.12.13 port 45103.
 .B \-b
 Max bytes per flow.  Capture no more than \fImax_bytes\fP bytes per
 flow.  Any data captured for a flow beyond \fImax_bytes\fP from the
-first byte captured will be ignored.  The default is to store an
+first byte captured will be discarded.  The default is to store an
 unlimited number of bytes per flow.
 .TP
 .B \-c
@@ -93,12 +90,13 @@ named \fIiface\fP.  If no interface is specified with
 , a reasonable default will be used by libpcap automatically.
 .TP
 .B \-p
-Promiscuous mode.
-.B DO NOT
-ask libpcap to put the network interface into promiscuous mode before
-capturing packets.  Note that it might already be in promiscuous mode
-for some other reason.  The default is to put the interface into
-promiscuous mode.
+No promiscuous mode.  Normally, tcpflow attempts to put the network
+interface into promiscuous mode before capturing packets.  The
+.B \-p
+option tells tcpflow
+.B not
+to put the interface into promiscuous mode.  Note that it might
+already be in promiscuous mode for some other reason.
 .TP
 .B \-s
 Strip non-printables.  Convert all non-printable characters to the
