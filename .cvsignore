@@ -1,1 +1,4 @@
-tcpflow
+config.cache
+config.status
+Makefile
+tcpflow.spec
