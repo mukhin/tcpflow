@@ -1,7 +1,7 @@
-AC_INIT(tcpflow.h)
+AC_INIT(/src/tcpflow.h)
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE(tcpflow, 0.20)
-AM_CONFIG_HEADER(conf.h)
+AM_CONFIG_HEADER(src/conf.h)
 
 
 dnl ############# System Dependencies
@@ -98,7 +98,6 @@ AC_CHECK_HEADERS(signal.h)
 
 dnl ############## Function checks
 
-AC_CHECK_FUNCS(fgetpos)
 AC_CHECK_FUNCS(sigaction)
 AC_CHECK_FUNCS(sigset)
 
@@ -109,9 +108,8 @@ AC_CHECK_TYPE(u_int32_t, unsigned long)
 AC_CHECK_TYPE(u_int16_t, unsigned short)
 AC_CHECK_TYPE(u_int8_t, unsigned char)
 AC_CHECK_TYPE(u_char, unsigned char)
-AC_CHECK_TYPE(fpos_t, long)
 
 dnl ############## Final Output
 
-AC_OUTPUT(Makefile tcpflow.1 tcpflow.spec)
+AC_OUTPUT(Makefile src/Makefile doc/Makefile doc/tcpflow.1 tcpflow.spec)
 

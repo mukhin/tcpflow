@@ -1,4 +1,4 @@
-/* conf.h.in.  Generated automatically from configure.in by autoheader.  */
+/* src/conf.h.in.  Generated automatically from configure.in by autoheader.  */
 
 /* Define as the return type of signal handlers (int or void).  */
 #undef RETSIGTYPE
@@ -18,14 +18,8 @@
 /* Define to `unsigned char' if <sys/types.h> doesn't define.  */
 #undef u_char
 
-/* Define to `long' if <sys/types.h> doesn't define.  */
-#undef fpos_t
-
 /* Define if DLT_NULL is half-broken (see code for details) */
 #undef DLT_NULL_BROKEN
-
-/* Define if you have the fgetpos function.  */
-#undef HAVE_FGETPOS
 
 /* Define if you have the sigaction function.  */
 #undef HAVE_SIGACTION
@@ -53,9 +47,6 @@
 
 /* Define if you have the <netinet/tcp.h> header file.  */
 #undef HAVE_NETINET_TCP_H
-
-/* Define if you have the <pcap.h> header file.  */
-#undef HAVE_PCAP_H
 
 /* Define if you have the <signal.h> header file.  */
 #undef HAVE_SIGNAL_H
