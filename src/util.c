@@ -4,11 +4,11 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <pcap.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <unistd.h>
 
 #include "tcpflow.h"
-
-extern int debug_level;
 
 static char *debug_prefix = NULL;
 
@@ -19,12 +19,12 @@ static char *debug_prefix = NULL;
 
 
 /* Simple wrapper around the malloc() function */
-void *check_malloc(int size)
+void *check_malloc(size_t size)
 {
   void *ptr;
 
   if ((ptr = malloc(size)) == NULL) {
-    debug(0, "Malloc failed - out of memory?");
+    DEBUG(0) ("Malloc failed - out of memory?");
     exit(1);
   }
   return ptr;
@@ -45,13 +45,10 @@ void init_debug(char *argv[])
 /*
  * Print a debugging or informational message
  */
-void debug(int message_level, char *fmt, ...)
+void debug_real(char *fmt, ...)
 {
   va_list ap;
   char message[BUFSIZE];
-
-  if (message_level > debug_level)
-    return;
 
   /* resolve var-arg buffer */
   va_start(ap, fmt);
@@ -115,7 +112,7 @@ char *copy_argv(char *argv[])
 
 #define RING_SIZE 6
 
-char *socket_filename(flow_t flow)
+char *flow_filename(flow_t flow)
 {
   static char ring_buffer[RING_SIZE][32];
   static int ring_pos = 0;
@@ -145,9 +142,9 @@ int get_max_fds(void)
   int max_descs = 0;
   const char *method;
 
-/* First, we'll try using getrlimit/setrlimit.  This will probably
- * work on most systems.  HAS_RLIMIT is defined in sysdep.h.  */
-#ifdef HAS_RLIMIT
+  /* First, we'll try using getrlimit/setrlimit.  This will probably
+   * work on most systems.  HAS_RLIMIT is defined in sysdep.h.  */
+#ifdef RLIMIT_NOFILE
   {
     struct rlimit limit;
 
@@ -167,21 +164,22 @@ int get_max_fds(void)
 #ifdef RLIM_INFINITY
     if (limit.rlim_max == RLIM_INFINITY)
       max_descs = MAX_FD_GUESS * 4;
-#else
-    max_descs = limit.rlim_max);
+    else
 #endif
+      max_descs = limit.rlim_max;
+  }
 
-#elif defined (OPEN_MAX) || defined(FOPEN_MAX)
-#if !defined(OPEN_MAX)
-#define OPEN_MAX FOPEN_MAX
-#endif
+
   /* rlimit didn't work, but you have OPEN_MAX */
+#elif defined (OPEN_MAX)
   method = "OPEN_MAX";
   max_descs = OPEN_MAX;
-#elif defined (_SC_OPEN_MAX)
+
+
   /* Okay, you don't have getrlimit() and you don't have OPEN_MAX.
    * Time to try the POSIX sysconf() function.  (See Stevens'
    * _Advanced Programming in the UNIX Environment_).  */
+#elif defined (_SC_OPEN_MAX)
   method = "POSIX sysconf";
   errno = 0;
   if ((max_descs = sysconf(_SC_OPEN_MAX)) < 0) {
@@ -192,12 +190,13 @@ int get_max_fds(void)
       exit(1);
     }
   }
-#else
+
   /* if everything has failed, we'll just take a guess */
+#else
   method = "random guess";
   max_descs = MAX_FD_GUESS;
 #endif
 
-  debug(2, "setting max FDs to %d using %s", max_descs, method);
+  DEBUG(2) ("found max FDs to be %d using %s", max_descs, method);
   return max_descs;
 }

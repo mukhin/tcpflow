@@ -1,16 +1,20 @@
+#define __MAIN_C__
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
 #include <sys/types.h>
 #include <sys/time.h>
 
-#include <pcap.h>
-
 #include "tcpflow.h"
 
+
 int debug_level = DEFAULT_DEBUG_LEVEL;
-int no_promisc = 0;
+int promisc = 0;
+int bytes_per_flow = 0;
+int max_flows = 0;
+int console_only = 0;
+
 char error[PCAP_ERRBUF_SIZE];
 
 
@@ -33,25 +37,38 @@ int main(int argc, char *argv[])
 
   opterr = 0;
 
-  while ((arg = getopt(argc, argv, "pi:d:v")) != EOF) {
+  while ((arg = getopt(argc, argv, "b:cd:i:pv")) != EOF) {
     switch (arg) {
-    case 'p':
-      no_promisc = 1;
+    case 'b':
+      if ((bytes_per_flow = atoi(optarg)) < 0) {
+	DEBUG(1) ("warning: invalid value '%s' used with -b ignored", optarg);
+	bytes_per_flow = 0;
+      } else {
+	DEBUG(10) ("capturing max of %d bytes per flow", bytes_per_flow);
+      }
+      break;
+    case 'c':
+      console_only = 1;
+      DEBUG(10) ("printing packets to console only");
+      break;
+    case 'd':
+      if ((debug_level = atoi(optarg)) <= 0) {
+	debug_level = DEFAULT_DEBUG_LEVEL;
+	DEBUG(1) ("warning: -d flag with 0 debug level '%s'", optarg);
+      }
       break;
     case 'i':
       device = optarg;
       break;
-    case 'd':
-      if ((debug_level = atoi(optarg)) <= 0) {
-	debug_level = 0;
-	debug(0, "warning: -d flag with 0 debug level '%s'", optarg);
-      }
+    case 'p':
+      promisc = 1;
+      DEBUG(10) ("turning on promiscuous mode");
       break;
     case 'v':
-      debug_level = 5;
+      debug_level = 10;
       break;
     default:
-      debug(1, "warning: unrecognized switch '%c'", optopt);
+      DEBUG(1) ("warning: unrecognized switch '%c'", optopt);
       break;
     }
   }
@@ -62,7 +79,7 @@ int main(int argc, char *argv[])
       die(error);
 
   /* make sure we can open the device */
-  if ((pd = pcap_open_live(device, SNAPLEN, !no_promisc, 5000, error)) == NULL)
+  if ((pd = pcap_open_live(device, SNAPLEN, promisc, 5000, error)) == NULL)
     die(error);
 
   /* drop root privileges - we don't need them any more */
@@ -84,7 +101,7 @@ int main(int argc, char *argv[])
     expression = new_expression;
   }
 
-  debug(10, "filter expression: '%s'", expression);
+  DEBUG(20) ("filter expression: '%s'", expression);
 
   /* install the filter expression in BPF */
   if (pcap_compile(pd, &fcode, expression, 1, 0) < 0)
@@ -93,8 +110,11 @@ int main(int argc, char *argv[])
   if (pcap_setfilter(pd, &fcode) < 0)
     die(pcap_geterr(pd));
 
+  /* initialize our flow state structures */
+  init_flow_state();
+
   /* start listening! */
-  debug(1, "listening on %s", device);
+  DEBUG(1) ("listening on %s", device);
   if (pcap_loop(pd, -1, handler, NULL) < 0)
     die(pcap_geterr(pd));
 

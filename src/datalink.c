@@ -1,14 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <sys/types.h>
+#include "tcpflow.h"
+
 #include <net/if.h>
 #include <netinet/in.h>
 #include <netinet/if_ether.h>
 
-#include <pcap.h>
-
-#include "tcpflow.h"
 
 
 /* The DLT_NULL packet header is 4 bytes long. It contains a network
@@ -22,19 +20,19 @@ void dl_null(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
   u_int family;
 
   if (length != caplen) {
-    debug(2, "warning: only captured %d bytes of %d byte null frame",
+    DEBUG(6) ("warning: only captured %d bytes of %d byte null frame",
 	  caplen, length);
   }
 
   if (caplen < NULL_HDRLEN) {
-    debug(2, "warning: received incomplete null frame");
+    DEBUG(6) ("warning: received incomplete null frame");
     return;
   }
 
   /* make sure this is AF_INET */
   memcpy((char *)&family, (char *)p, sizeof(family));
   if (family != AF_INET) {
-    debug(2, "warning: received non-AF_INET null frame");
+    DEBUG(6) ("warning: received non-AF_INET null frame");
     return;
   }
 
@@ -51,18 +49,18 @@ void dl_ethernet(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
   struct ether_header *eth_header = (struct ether_header *) p;
 
   if (length != caplen) {
-    debug(2, "warning: only captured %d bytes of %d byte ether frame",
+    DEBUG(6) ("warning: only captured %d bytes of %d byte ether frame",
 	  caplen, length);
   }
 
   if (caplen < sizeof(struct ether_header)) {
-    debug(2, "warning: received incomplete ethernet frame");
+    DEBUG(6) ("warning: received incomplete ethernet frame");
     return;
   }
 
   /* we're only expecting IP datagrams, nothing else */
   if (ntohs(eth_header->ether_type) != ETHERTYPE_IP) {
-    debug(5, "warning: received ethernet frame with unknown type %x",
+    DEBUG(6) ("warning: received ethernet frame with unknown type %x",
 	  ntohs(eth_header->ether_type));
     return;
   }
@@ -82,12 +80,12 @@ void dl_ppp(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
   u_int length = h->len;
 
   if (length != caplen) {
-    debug(2, "warning: only captured %d bytes of %d byte PPP frame",
+    DEBUG(6) ("warning: only captured %d bytes of %d byte PPP frame",
 	  caplen, length);
   }
 
   if (caplen < PPP_HDRLEN) {
-    debug(2, "warning: received incomplete PPP frame");
+    DEBUG(6) ("warning: received incomplete PPP frame");
     return;
   }
 
@@ -102,7 +100,7 @@ void dl_raw(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
   u_int length = h->len;
 
   if (length != caplen) {
-    debug(2, "warning: only captured %d bytes of %d byte raw frame",
+    DEBUG(6) ("warning: only captured %d bytes of %d byte raw frame",
 	  caplen, length);
   }
 
@@ -126,7 +124,7 @@ pcap_handler find_handler(int datalink_type, char *device)
     { NULL, 0 },
   };
 
-  debug(2, "looking for handler for datalink type %d for interface %s",
+  DEBUG(2) ("looking for handler for datalink type %d for interface %s",
 	datalink_type, device);
 
   for (i = 0; handlers[i].handler != NULL; i++)
