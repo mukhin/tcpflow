@@ -1317,16 +1317,16 @@ echo "configure:1310: checking for --with-pcap option" >&5
 	    else
 		echo "$ac_t""$withval" 1>&6
 		if test -d "$withval/include"; then
-		  CFLAGS="$CFLAGS -I$withval/include"
-		  CPPFLAGS="$CPPFLAGS -I$withval/include"
+		  CFLAGS="$CFLAGS -I$withval/include -I../$withval/include"
+		  CPPFLAGS="$CPPFLAGS -I$withval/include -I../$withval/include"
 		else
-		  CFLAGS="$CFLAGS -I$withval"
-		  CPPFLAGS="$CPPFLAGS -I$withval"
+		  CFLAGS="$CFLAGS -I$withval -I../$withval"
+		  CPPFLAGS="$CPPFLAGS -I$withval -I../$withval"
 		fi
 	        if test -d "$withval/lib"; then
-		  LIBS="$LIBS -L$withval/lib"
+		  LIBS="$LIBS -L$withval/lib -L../$withval/lib"
 		else
-		  LIBS="$LIBS -L$withval"
+		  LIBS="$LIBS -L$withval -L../$withval"
 		fi
 	    fi
 	    ;;
