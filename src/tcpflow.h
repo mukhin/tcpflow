@@ -1,34 +1,36 @@
-#ifndef __FAVOR_BSD
-#define __FAVOR_BSD
+/*
+ * This file is part of tcpflow by Jeremy Elson <jelson@circlemud.org>
+ * Initial Release: 7 April 1999.
+ *
+ * This source code is under the GNU Public License (GPL).  See
+ * LICENSE for details.
+ *
+ * $Id$
+ *
+ * $Log$
+ * Revision 1.7  1999/04/13 01:38:14  jelson
+ * Added portability features with 'automake' and 'autoconf'.  Added AUTHORS,
+ * NEWS, README, etc files (currently empty) to conform to GNU standards.
+ *
+ * Various portability fixes, including the FGETPOS/FSETPOS macros; detection
+ * of header files using autoconf; restructuring of debugging code to not
+ * need vsnprintf.
+ *
+ */
+
+#ifndef __TCPFLOW_H__
+#define __TCPFLOW_H__
+
+#ifdef HAVE_CONFIG_H
+#include "conf.h"
 #endif
 
-#ifndef __USE_BSD
-#define __USE_BSD
+#include "sysdep.h"
+
+
+#ifndef __SYSDEP_H__
+#error something is messed up
 #endif
-
-#include <sys/types.h>
-#include <netinet/tcp.h>
-#include <pcap.h>
-
-
-/****************** Ugly System Dependencies ******************************/
-
-/* We always want to refer to RLIMIT_NOFILE, even if what you actually
- * have is RLIMIT_OFILE */
-#ifdef RLIMIT_OFILE
-# ifndef RLIMIT_NOFILE
-#  define RLIMIT_NOFILE RLIMIT_OFILE
-# endif
-#endif
-
-/* We always want to refer to OPEN_MAX, even if what you actually have
- * is FOPEN_MAX. */
-#ifdef FOPEN_MAX
-# ifndef OPEN_MAX
-#  define OPEN_MAX FOPEN_MAX
-# endif
-#endif
-
 
 /**************************** Constants ***********************************/
 
@@ -117,3 +119,6 @@ FILE *open_file(flow_state_t *flow_state);
 int close_file(flow_state_t *flow_state);
 void sort_fds();
 void contract_fd_ring();
+
+
+#endif /* __TCPFLOW_H__ */

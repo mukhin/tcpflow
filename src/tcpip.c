@@ -1,8 +1,24 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <errno.h>
+/*
+ * This file is part of tcpflow by Jeremy Elson <jelson@circlemud.org>
+ * Initial Release: 7 April 1999.
+ *
+ * This source code is under the GNU Public License (GPL).  See
+ * LICENSE for details.
+ *
+ * $Id$
+ *
+ * $Log$
+ * Revision 1.5  1999/04/13 01:38:15  jelson
+ * Added portability features with 'automake' and 'autoconf'.  Added AUTHORS,
+ * NEWS, README, etc files (currently empty) to conform to GNU standards.
+ *
+ * Various portability fixes, including the FGETPOS/FSETPOS macros; detection
+ * of header files using autoconf; restructuring of debugging code to not
+ * need vsnprintf.
+ *
+ */
+
+static char *cvsid = "$Id$";
 
 #include "tcpflow.h"
 
@@ -201,7 +217,7 @@ void store_packet(flow_t flow, const char *data, u_int32_t length,
   /* if we're not at the correct point in the file, seek there */
   if (offset != state->pos) {
     fpos = offset;
-    fsetpos(state->fp, &fpos);
+    FSETPOS(state->fp, &fpos);
   }
 
   /* write the data into the file */
@@ -209,8 +225,13 @@ void store_packet(flow_t flow, const char *data, u_int32_t length,
 	  length, offset);
 
   if (fwrite(data, length, 1, state->fp) < 0) {
-    DEBUG(1) ("write to %s failed: %s", flow_filename(state->flow),
-	  strerror(errno));
+    /* sigh... this should be a nice, plain DEBUG statement that
+     * passes strerrror() as an argument, but SunOS 4.1.3 doesn't seem
+     * to have strerror. */
+    if (debug_level >= 1) {
+      DEBUG(1) ("write to %s failed: ", flow_filename(state->flow));
+      perror("");
+    }
   }
   fflush(state->fp);
 

@@ -1,6 +1,24 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
+/*
+ * This file is part of tcpflow by Jeremy Elson <jelson@circlemud.org>
+ * Initial Release: 7 April 1999.
+ *
+ * This source code is under the GNU Public License (GPL).  See
+ * LICENSE for details.
+ *
+ * $Id$
+ *
+ * $Log$
+ * Revision 1.6  1999/04/13 01:38:11  jelson
+ * Added portability features with 'automake' and 'autoconf'.  Added AUTHORS,
+ * NEWS, README, etc files (currently empty) to conform to GNU standards.
+ *
+ * Various portability fixes, including the FGETPOS/FSETPOS macros; detection
+ * of header files using autoconf; restructuring of debugging code to not
+ * need vsnprintf.
+ *
+ */
+
+static char *cvsid = "$Id$";
 
 #include "tcpflow.h"
 
@@ -173,7 +191,7 @@ FILE *open_file(flow_state_t *flow_state)
 
   /* set flags and remember where in the file we are */
   SET_BIT(flow_state->flags, FLOW_FILE_EXISTS);
-  fgetpos(flow_state->fp, &(flow_state->pos));
+  FGETPOS(flow_state->fp, &(flow_state->pos));
 
   return flow_state->fp;
 }

@@ -1,5 +1,24 @@
-#include <stdio.h>
-#include <stdlib.h>
+/*
+ * This file is part of tcpflow by Jeremy Elson <jelson@circlemud.org>
+ * Initial Release: 7 April 1999.
+ *
+ * This source code is under the GNU Public License (GPL).  See
+ * LICENSE for details.
+ *
+ * $Id$
+ *
+ * $Log$
+ * Revision 1.3  1999/04/13 01:38:10  jelson
+ * Added portability features with 'automake' and 'autoconf'.  Added AUTHORS,
+ * NEWS, README, etc files (currently empty) to conform to GNU standards.
+ *
+ * Various portability fixes, including the FGETPOS/FSETPOS macros; detection
+ * of header files using autoconf; restructuring of debugging code to not
+ * need vsnprintf.
+ *
+ */
+
+static char *cvsid = "$Id$";
 
 #include "tcpflow.h"
 
@@ -117,7 +136,9 @@ pcap_handler find_handler(int datalink_type, char *device)
     int type;
   } handlers[] = {
     { dl_null, DLT_NULL },
+#ifdef DLT_RAW
     { dl_raw, DLT_RAW },
+#endif
     { dl_ethernet, DLT_EN10MB },
     { dl_ethernet, DLT_IEEE802 },
     { dl_ppp, DLT_PPP },

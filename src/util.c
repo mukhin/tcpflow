@@ -1,17 +1,28 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
-#include <unistd.h>
+/*
+ * This file is part of tcpflow by Jeremy Elson <jelson@circlemud.org>
+ * Initial Release: 7 April 1999.
+ *
+ * This source code is under the GNU Public License (GPL).  See
+ * LICENSE for details.
+ *
+ * $Id$
+ *
+ * $Log$
+ * Revision 1.7  1999/04/13 01:38:16  jelson
+ * Added portability features with 'automake' and 'autoconf'.  Added AUTHORS,
+ * NEWS, README, etc files (currently empty) to conform to GNU standards.
+ *
+ * Various portability fixes, including the FGETPOS/FSETPOS macros; detection
+ * of header files using autoconf; restructuring of debugging code to not
+ * need vsnprintf.
+ *
+ */
 
-#include <sys/time.h>
-#include <sys/resource.h>
-#include <unistd.h>
+static char *cvsid = "$Id$";
 
 #include "tcpflow.h"
 
 static char *debug_prefix = NULL;
-
 extern int max_desired_fds;
 
 #define BUFSIZE 1024
@@ -45,41 +56,39 @@ void init_debug(char *argv[])
 
 
 /*
- * Print a debugging or informational message
+ * Print a debugging message, given a va_list
  */
+void print_debug_message(char *fmt, va_list ap)
+{
+  /* print debug prefix */
+  fprintf(stderr, "%s: ", debug_prefix);
+
+  /* print the var-arg buffer passed to us */
+  vfprintf(stderr, fmt, ap);
+
+  /* add newline */
+  fprintf(stderr, "\n");
+  (void) fflush(stderr);
+}
+
+/* Print a debugging or informational message */
 void debug_real(char *fmt, ...)
 {
   va_list ap;
-  char message[BUFSIZE];
 
-  /* resolve var-arg buffer */
   va_start(ap, fmt);
-  vsnprintf(message, BUFSIZE-1, fmt, ap);
-  message[BUFSIZE-1] = '\0';
-
-  /* put it together and print */
-  fprintf(stderr, "%s: %s\n", debug_prefix, message);
-  (void) fflush(stderr);
-
+  print_debug_message(fmt, ap);
   va_end(ap);
 }
   
 
-/* Print an error message and then exit */
+/* Print a debugging or informatioal message, then exit  */
 void die(char *fmt, ...)
 {
   va_list ap;
-  char message[BUFSIZE];
-  
-  /* resolve var-arg buffer */
+
   va_start(ap, fmt);
-  vsnprintf(message, BUFSIZE-1, fmt, ap);
-  message[BUFSIZE-1] = '\0';
-
-  /* put it together and print */
-  fprintf(stderr, "%s: %s\n", debug_prefix, message);
-  (void) fflush(stderr);
-
+  print_debug_message(fmt, ap);
   exit(1);
 }
 
@@ -136,6 +145,8 @@ char *flow_filename(flow_t flow)
 
   return ring_buffer[ring_pos];
 }
+
+#undef RING_SIZE
 
 
 /* Try to find the maximum number of FDs this system can have open */

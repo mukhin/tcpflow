@@ -1,0 +1,83 @@
+AC_INIT(tcpflow.h)
+AM_INIT_AUTOMAKE(tcpflow, 0.10)
+AM_CONFIG_HEADER(conf.h)
+
+dnl ############# Compiler Check
+
+AC_PROG_CC
+AC_GCC_FLAGS
+
+AC_ARG_WITH(pcap,
+[  --with-pcap=PATH        Specify path to pcap library.],
+    [
+	AC_MSG_CHECKING(for --with-pcap option)
+	case "$withval" in
+	  yes|no)
+	    AC_MSG_ERROR(PATH required with pcap option)
+	    ;;
+	  *)
+	    if test '!' -d "$withval"; then
+		AC_MSG_ERROR($withval does not exist!)
+	    else
+		AC_MSG_RESULT($withval)
+		if test -d "$withval/include"; then
+		  CFLAGS="$CFLAGS -I$withval/include"
+		  CPPFLAGS="$CPPFLAGS -I$withval/include"
+		else
+		  CFLAGS="$CFLAGS -I$withval"
+		  CPPFLAGS="$CPPFLAGS -I$withval"
+		fi
+	        if test -d "$withval/lib"; then
+		  LIBS="$LIBS -L$withval/lib"
+		else
+		  LIBS="$LIBS -L$withval"
+		fi
+	    fi
+	    ;;
+	  esac
+    ]
+)
+	
+dnl ############## Library Checks
+
+AC_CHECK_LIB(nsl, gethostbyaddr)
+AC_CHECK_LIB(socket, socket)
+
+AC_CHECK_LIB(pcap, pcap_lookupdev, , [
+	AC_MSG_ERROR([
+Can't find the pcap library (libpcap.a); install the pcap library (from
+ftp://ftp.ee.lbl.gov/libpcap.tar.Z ) and/or use
+--with-pcap to specify the path to it on your system
+
+When installing libpcap do both 'make install' and 'make install-incl'])
+])
+
+dnl ############## Header Checks
+
+AC_HEADER_STDC
+AC_CHECK_HEADERS(string.h strings.h sys/resource.h sys/types.h unistd.h)
+AC_CHECK_HEADERS(sys/bitypes.h sys/socket.h netinet/tcp.h netinet/in_systm.h)
+
+AC_CHECK_HEADER(pcap.h, , [
+	AC_MSG_ERROR([
+Can't find pcap.h; install the pcap library (from
+ftp://ftp.ee.lbl.gov/libpcap.tar.Z ) and/or use
+--with-pcap to specify the path to it on your system
+
+When installing libpcap do both 'make install' and 'make install-incl'])
+])
+
+dnl ############## Function checks
+
+AC_CHECK_FUNCS(fgetpos)
+
+dnl ############## Type checks
+
+AC_CHECK_TYPE(u_int32_t, unsigned long)
+AC_CHECK_TYPE(u_int16_t, unsigned short)
+AC_CHECK_TYPE(u_int8_t, unsigned char)
+AC_CHECK_TYPE(fpos_t, long)
+
+dnl ############## Final Output
+
+AC_OUTPUT(Makefile)

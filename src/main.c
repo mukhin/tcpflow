@@ -1,3 +1,25 @@
+/*
+ * This file is part of tcpflow by Jeremy Elson <jelson@circlemud.org>
+ * Initial Release: 7 April 1999.
+ *
+ * This source code is under the GNU Public License (GPL).  See
+ * LICENSE for details.
+ *
+ * $Id$
+ *
+ * $Log$
+ * Revision 1.6  1999/04/13 01:38:12  jelson
+ * Added portability features with 'automake' and 'autoconf'.  Added AUTHORS,
+ * NEWS, README, etc files (currently empty) to conform to GNU standards.
+ *
+ * Various portability fixes, including the FGETPOS/FSETPOS macros; detection
+ * of header files using autoconf; restructuring of debugging code to not
+ * need vsnprintf.
+ *
+ */
+
+static char *cvsid = "$Id$";
+
 #define __MAIN_C__
 
 #include <stdio.h>
@@ -10,7 +32,7 @@
 
 
 int debug_level = DEFAULT_DEBUG_LEVEL;
-int promisc = 0;
+int no_promisc = 0;
 int bytes_per_flow = 0;
 int max_flows = 0;
 int max_desired_fds = 0;
@@ -74,8 +96,8 @@ int main(int argc, char *argv[])
       device = optarg;
       break;
     case 'p':
-      promisc = 1;
-      DEBUG(10) ("turning on promiscuous mode");
+      no_promisc = 1;
+      DEBUG(10) ("NOT turning on promiscuous mode");
       break;
     case 'v':
       debug_level = 10;
@@ -92,7 +114,7 @@ int main(int argc, char *argv[])
       die(error);
 
   /* make sure we can open the device */
-  if ((pd = pcap_open_live(device, SNAPLEN, promisc, 5000, error)) == NULL)
+  if ((pd = pcap_open_live(device, SNAPLEN, !no_promisc, 1000, error)) == NULL)
     die(error);
 
   /* drop root privileges - we don't need them any more */
