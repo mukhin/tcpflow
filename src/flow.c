@@ -20,7 +20,7 @@ void init_flow_state()
    * stdin, stdout, stderr, and the packet filter; one for breathing
    * room (we open new files before closing old ones), and one more to
    * be safe. */
-  max_fds = get_max_fds() - 5;
+  max_fds = get_max_fds() - NUM_RESERVED_FDS;
 
   fd_ring = MALLOC(flow_state_t *, max_fds);
 

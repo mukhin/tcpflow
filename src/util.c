@@ -12,6 +12,8 @@
 
 static char *debug_prefix = NULL;
 
+extern int max_desired_fds;
+
 #define BUFSIZE 1024
 
 
@@ -154,9 +156,12 @@ int get_max_fds(void)
       exit(1);
     }
 
-    /* set the current to the maximum */
-    /*    limit.rlim_cur = limit.rlim_max; */
-    limit.rlim_cur = 8;
+    /* set the current to the maximum or specified value */
+    if (max_desired_fds)
+      limit.rlim_cur = max_desired_fds;
+    else
+      limit.rlim_cur = limit.rlim_max;
+
     if (setrlimit(RLIMIT_NOFILE, &limit) < 0) {
       perror("calling setrlimit");
       exit(1);
@@ -197,6 +202,12 @@ int get_max_fds(void)
   method = "random guess";
   max_descs = MAX_FD_GUESS;
 #endif
+
+  /* this must go here, after rlimit code */
+  if (max_desired_fds) {
+    DEBUG(2) ("using only %d FDs", max_desired_fds);
+    return max_desired_fds;
+  }
 
   DEBUG(2) ("found max FDs to be %d using %s", max_descs, method);
   return max_descs;

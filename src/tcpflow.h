@@ -34,6 +34,7 @@
 
 #define DEFAULT_DEBUG_LEVEL 1
 #define MAX_FD_GUESS        64
+#define NUM_RESERVED_FDS    5     /* number of FDs to set aside */
 #define HASH_SIZE           1009  /* prime number near 1000 */
 #define SNAPLEN             65536 /* largest possible MTU we'll see */
 

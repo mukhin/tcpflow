@@ -13,6 +13,7 @@ int debug_level = DEFAULT_DEBUG_LEVEL;
 int promisc = 0;
 int bytes_per_flow = 0;
 int max_flows = 0;
+int max_desired_fds = 0;
 int console_only = 0;
 
 char error[PCAP_ERRBUF_SIZE];
@@ -37,7 +38,7 @@ int main(int argc, char *argv[])
 
   opterr = 0;
 
-  while ((arg = getopt(argc, argv, "b:cd:i:pv")) != EOF) {
+  while ((arg = getopt(argc, argv, "b:cd:f:i:pv")) != EOF) {
     switch (arg) {
     case 'b':
       if ((bytes_per_flow = atoi(optarg)) < 0) {
@@ -55,6 +56,13 @@ int main(int argc, char *argv[])
       if ((debug_level = atoi(optarg)) <= 0) {
 	debug_level = DEFAULT_DEBUG_LEVEL;
 	DEBUG(1) ("warning: -d flag with 0 debug level '%s'", optarg);
+      }
+      break;
+    case 'f':
+      if ((max_desired_fds = atoi(optarg)) < (NUM_RESERVED_FDS + 2)) {
+	DEBUG(1) ("warning: -f flag must be used with argument >= %d",
+		  NUM_RESERVED_FDS + 2);
+	max_desired_fds = 0;
       }
       break;
     case 'i':
