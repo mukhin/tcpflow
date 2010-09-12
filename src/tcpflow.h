@@ -112,6 +112,7 @@ void init_debug(char *argv[]);
 void *check_malloc(size_t size);
 char *flow_filename(flow_t flow);
 int get_max_fds(void);
+void format_timestamp(char* tm_buffer, int tm_buffer_length, struct timeval* tv, int f_datetime);
 RETSIGTYPE (*portable_signal(int signo, RETSIGTYPE (*func)(int)))(int);
 void debug_real(char *fmt, ...)
 #ifdef __GNUC__
@@ -128,13 +129,12 @@ void die(char *fmt, ...)
 pcap_handler find_handler(int datalink_type, char *device);
 
 /* tcpip.c */
-void process_ip(const u_char *data, u_int32_t length);
-void process_tcp(const u_char *data, u_int32_t length, u_int32_t src,
-		 u_int32_t dst);
-void print_packet(flow_t flow, const u_char *data, u_int32_t length);
-void store_packet(flow_t flow, const u_char *data, u_int32_t length,
-		  u_int32_t seq);
-u_char *do_strip_nonprint(const u_char *data, u_int32_t length);
+void process_ip(const u_char *data, u_int32_t length, struct timeval* tv);
+void process_tcp(const u_char *data, u_int32_t length, u_int32_t src, u_int32_t dst, struct timeval* tv);
+void print_packet(flow_t flow, const u_char *data, u_int32_t length, const char* tm_buffer);
+void store_packet(flow_t flow, const u_char *data, u_int32_t length, u_int32_t seq);
+u_char *do_formatting(const u_char *data, u_int32_t length, u_int32_t *b_length, const char* tm_buffer);
+u_char *print_time(const u_char *data, u_int32_t length, u_int32_t *b_length, const char* tm_buffer);
 
 /* flow.c */
 void init_flow_state();

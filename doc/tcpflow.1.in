@@ -6,7 +6,7 @@ tcpflow \- TCP flow recorder
 .na
 .B tcpflow
 [\c
-.BI \-chpsv\fR\c
+.BI \-chpsvto\fR\c
 ]
 [\c
 .BI \-b \ max_bytes\fR\c
@@ -60,6 +60,8 @@ unlimited number of bytes per flow.
 Console print.  Print the contents of packets to stdout as they
 are received, without storing any captured data to files (implies
 .B -s
+.B -t
+.B -o
 ).
 .TP
 .B \-d
@@ -117,9 +119,17 @@ option should be used to set the snaplen to the MTU of the interface
 (e.g., 1500) while capturing packets.
 .TP
 .B \-s
-Strip non-printables.  Convert all non-printable characters to the
+Convert all non-printable characters to the
 "." character before printing packets to the console or storing them
 to a file.
+.TP
+.B \-o
+Strip end-of-line symbols.  Convert all end-of-line symbols to the
+"." character before printing packets to the console or storing them
+to a file.
+.TP
+.B \-t
+Add current timetamp to the output.
 .TP
 .B \-v
 Verbose operation.  Verbosely describe tcpflow's operation.

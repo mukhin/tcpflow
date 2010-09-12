@@ -71,15 +71,19 @@ int max_flows = 0;
 int max_desired_fds = 0;
 int console_only = 0;
 int strip_nonprint = 0;
+int print_time_per_line = 0;
+int print_datetime_per_line = 0;
+int strip_nr = 0;
 
 char error[PCAP_ERRBUF_SIZE];
 
 
 void print_usage(char *progname)
 {
-  fprintf(stderr, "%s version %s by Jeremy Elson <jelson@circlemud.org>\n\n",
-		 PACKAGE, VERSION);
-  fprintf(stderr, "usage: %s [-chpsv] [-b max_bytes] [-d debug_level] [-f max_fds]\n", progname);
+  fprintf(stderr, "%s version %s by Jeremy Elson <jelson@circlemud.org> "
+	"(patched by Andrey Mukhin <a.mukhin77@gmail.com>)\n\n",
+	PACKAGE, VERSION);
+  fprintf(stderr, "usage: %s [-chpsvto] [-b max_bytes] [-d debug_level] [-f max_fds]\n", progname);
   fprintf(stderr, "          [-i iface] [-w file] [expression]\n\n");
   fprintf(stderr, "        -b: max number of bytes per flow to save\n");
   fprintf(stderr, "        -c: console print only (don't create files)\n");
@@ -92,6 +96,9 @@ void print_usage(char *progname)
   fprintf(stderr, "        -r: read packets from tcpdump output file\n");
   fprintf(stderr, "        -s: strip non-printable characters (change to '.')\n");
   fprintf(stderr, "        -v: verbose operation equivalent to -d 10\n");
+  fprintf(stderr, "        -t: add time to the output\n");
+  fprintf(stderr, "        -x: add date & time to the output\n");
+  fprintf(stderr, "        -o: strip end-of-line characters (change to '.')\n");
   fprintf(stderr, "expression: tcpdump-like filtering expression\n");
   fprintf(stderr, "\nSee the man page for additional information.\n\n");
 }
@@ -124,7 +131,7 @@ int main(int argc, char *argv[])
 
   opterr = 0;
 
-  while ((arg = getopt(argc, argv, "b:cd:f:hi:pr:sv")) != EOF) {
+  while ((arg = getopt(argc, argv, "b:cd:f:hi:pr:svtxo")) != EOF) {
     switch (arg) {
     case 'b':
       if ((bytes_per_flow = atoi(optarg)) < 0) {
@@ -141,6 +148,18 @@ int main(int argc, char *argv[])
     case 's':
       strip_nonprint = 1;
       DEBUG(10) ("converting non-printable characters to '.'");
+      break;
+    case 't':
+      print_time_per_line = 1;
+      DEBUG(10) ("add the time to the output");
+      break;
+    case 'x':
+      print_datetime_per_line = 1;
+      DEBUG(10) ("add date & time to the output");
+      break;
+    case 'o':
+        strip_nr = 1;
+        DEBUG(10) ("converting  end-of-line  characters to '.'");
       break;
     case 'd':
       if ((debug_level = atoi(optarg)) < 0) {
@@ -186,8 +205,9 @@ int main(int argc, char *argv[])
   }
 
   /* hello, world */
-  DEBUG(10) ("%s version %s by Jeremy Elson <jelson@circlemud.org>",
-	     PACKAGE, VERSION);
+  DEBUG(10) ("%s version %s by Jeremy Elson <jelson@circlemud.org> "
+	"(patched by Andrey Mukhin <a.mukhin77@gmail.com>)",
+	PACKAGE, VERSION);
 
   if (infile != NULL) {
     /* Since we don't need network access, drop root privileges */

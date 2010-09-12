@@ -78,7 +78,7 @@ void dl_null(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
   }
 #endif
 
-  process_ip(p + NULL_HDRLEN, caplen - NULL_HDRLEN);
+  process_ip(p + NULL_HDRLEN, caplen - NULL_HDRLEN, (struct timeval*) &h->ts);
 }
 
 
@@ -110,7 +110,7 @@ void dl_ethernet(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
   }
 
   process_ip(p + sizeof(struct ether_header),
-	     caplen - sizeof(struct ether_header));
+	     caplen - sizeof(struct ether_header), (struct timeval*) &h->ts);
 }
 
 
@@ -134,7 +134,7 @@ void dl_ppp(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
     return;
   }
 
-  process_ip(p + PPP_HDRLEN, caplen - PPP_HDRLEN);
+  process_ip(p + PPP_HDRLEN, caplen - PPP_HDRLEN, (struct timeval*) &h->ts);
 }
 
 
@@ -151,7 +151,7 @@ void dl_raw(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
 	  caplen, length);
   }
 
-  process_ip(p, caplen);
+  process_ip(p, caplen, (struct timeval*) &h->ts);
 }
 
 #define SLL_HDR_LEN       16
@@ -170,7 +170,7 @@ void dl_linux_sll(u_char *user, const struct pcap_pkthdr *h, const u_char *p){
     return;
   }
   
-  process_ip(p + SLL_HDR_LEN, caplen - SLL_HDR_LEN);
+  process_ip(p + SLL_HDR_LEN, caplen - SLL_HDR_LEN, (struct timeval*) &h->ts);
 }
 
 

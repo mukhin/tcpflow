@@ -1,3 +1,14 @@
+Version 0.21b (September 12, 2010):
+
+* Following options were added by Andrey Mukhin <a.mukhin77@gmail.com>:
+  -t -- add time to the output
+  -x -- add date & time to the output
+  -o -- convert end-of-line characters to '.'
+
+
+Version 0.21 
+
+
 Version 0.20 (February 26, 2001):
 
 * A bug was fixed that caused out-of-order reassembly to generate

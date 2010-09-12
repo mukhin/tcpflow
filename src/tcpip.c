@@ -57,6 +57,11 @@ static char *cvsid = "$Id$";
 extern int console_only;
 extern int bytes_per_flow;
 extern int strip_nonprint;
+extern int print_time_per_line;
+extern int print_datetime_per_line;
+extern int strip_nr;
+
+#define TM_BUFFER_LENGTH 40
 
 /*************************************************************************/
 
@@ -66,7 +71,7 @@ extern int strip_nonprint;
  * process_tcp() for further processing.
  *
  * Note: we currently don't know how to handle IP fragments. */
-void process_ip(const u_char *data, u_int32_t caplen)
+void process_ip(const u_char *data, u_int32_t caplen, struct timeval* tv)
 {
   const struct ip *ip_header = (struct ip *) data;
   u_int ip_header_len;
@@ -112,12 +117,12 @@ void process_ip(const u_char *data, u_int32_t caplen)
   /* do TCP processing */
   process_tcp(data + ip_header_len, ip_total_len - ip_header_len,
 	      ntohl(ip_header->ip_src.s_addr),
-	      ntohl(ip_header->ip_dst.s_addr));
+	      ntohl(ip_header->ip_dst.s_addr), tv);
 }
 
 
 void process_tcp(const u_char *data, u_int32_t length, u_int32_t src,
-		 u_int32_t dst)
+		 u_int32_t dst, struct timeval* tv)
 {
   struct tcphdr *tcp_header = (struct tcphdr *) data;
   flow_t this_flow;
@@ -150,44 +155,94 @@ void process_tcp(const u_char *data, u_int32_t length, u_int32_t src,
   data += tcp_header_len;
   length -= tcp_header_len;
 
-  /* strip nonprintable characters if necessary */
-  if (strip_nonprint)
-    data = do_strip_nonprint(data, length);
+  static char tm_buffer[TM_BUFFER_LENGTH];
+  if (print_time_per_line) {
+    format_timestamp(tm_buffer, TM_BUFFER_LENGTH, tv, 0);
+  }
+  else if (print_datetime_per_line) {
+    format_timestamp(tm_buffer, TM_BUFFER_LENGTH, tv, 1);
+  }
+
+  /* store the length of the data */
+  u_int32_t buffer_length = length;
+  data = do_formatting(data, length, &buffer_length, tm_buffer);
 
   /* store or print the output */
   if (console_only) {
-    print_packet(this_flow, data, length);
+    print_packet(this_flow, data, buffer_length, tm_buffer);
   } else {
-    store_packet(this_flow, data, length, seq);
+    store_packet(this_flow, data, buffer_length, seq);
   }
 }
 
 
 /* convert all non-printable characters to '.' (period).  not
  * thread-safe, obviously, but neither is most of the rest of this. */
-u_char *do_strip_nonprint(const u_char *data, u_int32_t length)
+u_char *do_formatting(const u_char *data, u_int32_t length, u_int32_t* b_length, const char* tm_buffer)
 {
+  u_int32_t tmp_length = 0;
+  u_int32_t size_of_tm_buffer = strlen(tm_buffer);
+
   static u_char buf[SNAPLEN];
   u_char *write_ptr;
 
   write_ptr = buf;
   while (length) {
-    if (isprint(*data) || (*data == '\n') || (*data == '\r'))
-      *write_ptr = *data;
-    else
+    if ((strip_nonprint && !(isprint(*data) || *data == '\n' || *data == '\r'))
+      || (strip_nr && (*data == '\n' || *data == '\r'))) {
       *write_ptr = '.';
+    }
+    else {
+      *write_ptr = *data;
+    }
     write_ptr++;
+    tmp_length++;
+    if (!strip_nr && ((print_time_per_line || print_datetime_per_line) && (*data == '\n'))) {
+      memcpy(write_ptr, tm_buffer,size_of_tm_buffer);
+      write_ptr += size_of_tm_buffer;
+      tmp_length += size_of_tm_buffer;
+    }
     data++;
     length--;
   }
 
+  *b_length = tmp_length;
+
   return buf;
 }
 
+/* added timestamp. */
+u_char *print_time(const u_char *data, u_int32_t length, u_int32_t* b_length, const char* tm_buffer)
+{
+  static u_char buf[SNAPLEN];
+  u_char *write_ptr;
+  u_int32_t tmp_length = 0;
+  u_int32_t size_of_tm_buffer = strlen(tm_buffer);
+  write_ptr = buf;
+  while (length) {
+    *write_ptr = *data;
+    write_ptr++;
+    tmp_length++;
+    if (*data == '\n') {
+      memcpy(write_ptr, tm_buffer,size_of_tm_buffer);
+      write_ptr += size_of_tm_buffer;
+      tmp_length += size_of_tm_buffer;
+    }
+    data++;
+    length--;
+  }
+
+  *b_length = tmp_length;
+
+  return buf;
+}
 
 /* print the contents of this packet to the console */
-void print_packet(flow_t flow, const u_char *data, u_int32_t length)
+void print_packet(flow_t flow, const u_char *data, u_int32_t length, const char* tm_buffer)
 {
+  if (print_time_per_line || print_datetime_per_line) {
+    printf("%s", tm_buffer);
+  }
   printf("%s: ", flow_filename(flow));
   fwrite(data, length, 1, stdout);
   putchar('\n');

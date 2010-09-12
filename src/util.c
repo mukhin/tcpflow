@@ -33,11 +33,15 @@
  */
 
 static char *cvsid = "$Id$";
+static const char* tm_format_string = "%02d:%02d:%02d.%06d ";
+static const char* tm_dateformat_string = "%Y-%m-%d %X ";
 
 #include "tcpflow.h"
 
 static char *debug_prefix = NULL;
 extern int max_desired_fds;
+extern int print_time_per_line;
+extern int print_datetime_per_line;
 
 #define BUFSIZE 1024
 
@@ -270,3 +274,18 @@ RETSIGTYPE (*portable_signal(int signo, RETSIGTYPE (*func)(int)))(int)
   return signal(signo, func);
 #endif /* HAVE_SIGACTION, HAVE_SIGSET */
 }
+
+void format_timestamp(char* tm_buffer, int tm_buffer_length, struct timeval* tv, int f_datetime) {
+  if (tv->tv_sec == 0 && tv->tv_usec == 0) {
+    gettimeofday(tv, NULL);
+  }
+  struct tm time_ = *localtime(&tv->tv_sec);
+  if (f_datetime) {
+    strftime(tm_buffer, tm_buffer_length, tm_dateformat_string, &time_);
+  }
+  else {
+    sprintf(tm_buffer, tm_format_string, time_.tm_hour, time_.tm_min, time_.tm_sec, (int)tv->tv_usec);
+  }
+}
+
+
