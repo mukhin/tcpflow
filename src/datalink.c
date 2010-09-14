@@ -5,9 +5,6 @@
  * This source code is under the GNU Public License (GPL).  See
  * LICENSE for details.
  *
- * $Id$
- *
- * $Log$
  * Revision 1.8  2002/03/29 23:18:51  jelson
  * oops... fixed typo
  *
@@ -38,10 +35,7 @@
  *
  */
 
-static char *cvsid = "$Id$";
-
 #include "tcpflow.h"
-
 
 
 /* The DLT_NULL packet header is 4 bytes long. It contains a network

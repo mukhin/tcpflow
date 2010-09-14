@@ -5,9 +5,6 @@
  * This source code is under the GNU Public License (GPL).  See
  * LICENSE for details.
  *
- * $Id$
- *
- * $Log$
  * Revision 1.9  2001/08/08 19:39:40  jelson
  * ARGH!  These are changes that made up tcpflow 0.20, which for some reason I
  * did not check into the repository until now.  (Which of couse means
@@ -32,11 +29,11 @@
  *
  */
 
-static char *cvsid = "$Id$";
+#include "tcpflow.h"
+
+
 static const char* tm_format_string = "%02d:%02d:%02d.%06d ";
 static const char* tm_dateformat_string = "%Y-%m-%d %X ";
-
-#include "tcpflow.h"
 
 static char *debug_prefix = NULL;
 extern int max_desired_fds;

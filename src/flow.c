@@ -5,9 +5,6 @@
  * This source code is under the GNU Public License (GPL).  See
  * LICENSE for details.
  *
- * $Id$
- *
- * $Log$
  * Revision 1.6  1999/04/13 01:38:11  jelson
  * Added portability features with 'automake' and 'autoconf'.  Added AUTHORS,
  * NEWS, README, etc files (currently empty) to conform to GNU standards.
@@ -17,8 +14,6 @@
  * need vsnprintf.
  *
  */
-
-static char *cvsid = "$Id$";
 
 #include "tcpflow.h"
 

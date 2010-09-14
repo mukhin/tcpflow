@@ -5,9 +5,6 @@
  * This source code is under the GNU Public License (GPL).  See
  * LICENSE for details.
  *
- * $Id$
- *
- * $Log$
  * Revision 1.13  2001/08/24 05:36:14  jelson
  * fflush stdout in console print mode, from suggestion of Andreas
  * Schweitzer <andy@physast.uga.edu>, who says "Otherwise, I can't
@@ -49,8 +46,6 @@
  * need vsnprintf.
  *
  */
-
-static char *cvsid = "$Id$";
 
 #include "tcpflow.h"
 

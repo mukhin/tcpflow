@@ -5,9 +5,6 @@
  * This source code is under the GNU Public License (GPL).  See
  * LICENSE for details.
  *
- * $Id$
- *
- * $Log$
  * Revision 1.15  2003/08/07 07:35:24  jelson
  * fixed format string attack
  *
@@ -56,8 +53,6 @@
  * need vsnprintf.
  *
  */
-
-static char *cvsid = "$Id$";
 
 #define __MAIN_C__
 

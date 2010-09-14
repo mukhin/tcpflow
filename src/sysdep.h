@@ -5,9 +5,6 @@
  * This source code is under the GNU Public License (GPL).  See
  * LICENSE for details.
  *
- * $Id$
- *
- * $Log$
  * Revision 1.5  2001/08/08 19:39:40  jelson
  * ARGH!  These are changes that made up tcpflow 0.20, which for some reason I
  * did not check into the repository until now.  (Which of couse means
