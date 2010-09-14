@@ -43,6 +43,9 @@
  * DLT_NULL is used by the localhost interface. */
 #define	NULL_HDRLEN 4
 
+/* loopback family */
+#define AF_LOOPBACK 0x2000000
+
 void dl_null(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
 {
   u_int caplen = h->caplen;
@@ -66,7 +69,7 @@ void dl_null(u_char *user, const struct pcap_pkthdr *h, const u_char *p)
   /* make sure this is AF_INET */
   memcpy((char *)&family, (char *)p, sizeof(family));
   family = ntohl(family);
-  if (family != AF_INET) {
+  if (family != AF_INET && family != AF_LOOPBACK) {
     DEBUG(6) ("warning: received non-AF_INET null frame (type %d)", family);
     return;
   }

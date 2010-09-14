@@ -182,6 +182,12 @@ int get_max_fds(void)
       exit(1);
     }
 
+#if defined(__APPLE__)
+	if (limit.rlim_max > OPEN_MAX) {
+		limit.rlim_max = OPEN_MAX;
+	}
+#endif
+
     /* set the current to the maximum or specified value */
     if (max_desired_fds)
       limit.rlim_cur = max_desired_fds;
