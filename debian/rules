@@ -19,7 +19,7 @@ build:
 	dh_testdir
 
 	# Add here commands to compile the package.
-	./debuild.sh
+	make
 	
 	touch $@
 
