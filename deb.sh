@@ -14,5 +14,6 @@ LOCALID="$(git rev-list HEAD | wc -l)";
 ver="${REVISION}.${LOCALID}";
 
 rm -f debian/changelog
+rm -Rf debian/tcpflow
 cat debian/changelog.in | sed -e "s|@@DATE@@|$date|g" | sed -e "s|@@VER@@|$ver|g" > debian/changelog
 dpkg-buildpackage -rfakeroot -us -uc -i\.git -I.git
