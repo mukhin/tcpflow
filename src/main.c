@@ -79,7 +79,7 @@ void print_usage(char *progname)
 	"(patched by Andrey Mukhin <a.mukhin77@gmail.com>)\n\n",
 	PACKAGE, VERSION);
   fprintf(stderr, "usage: %s [-chpsvto] [-b max_bytes] [-d debug_level] [-f max_fds]\n", progname);
-  fprintf(stderr, "          [-i iface] [-w file] [expression]\n\n");
+  fprintf(stderr, "          [-i iface] [-r file] [expression]\n\n");
   fprintf(stderr, "        -b: max number of bytes per flow to save\n");
   fprintf(stderr, "        -c: console print only (don't create files)\n");
   fprintf(stderr, "        -d: debug level; default is %d\n", DEFAULT_DEBUG_LEVEL);
