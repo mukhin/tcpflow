@@ -25,7 +25,7 @@ Installing tcpflow
 ==================
 
 tcpflow requires the pcap library from LBL; first, download it from
-ftp://ftp.ee.lbl.gov/libpcap.tar.Z and install it using
+http://www.tcpdump.org/ and install it using
 
    ./configure
    make
