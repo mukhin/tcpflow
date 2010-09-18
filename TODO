@@ -1,0 +1,8 @@
+* Renew configure.ac.
+* Review code, mark obsolete code to inspect more.
+* Remove unused headers.
+* Test on MacOS X, FreeBSD and Linux (write some test cases?)
+* Update packages:
+  - rpm spec
+  - debianization
+  - homebrew formula
