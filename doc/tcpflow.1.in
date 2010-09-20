@@ -6,7 +6,7 @@ tcpflow \- TCP flow recorder
 .na
 .B tcpflow
 [\c
-.BI \-chpsvto\fR\c
+.BI \-chpsvtox\fR\c
 ]
 [\c
 .BI \-b \ max_bytes\fR\c
@@ -62,6 +62,7 @@ are received, without storing any captured data to files (implies
 .B -s
 .B -t
 .B -o
+.B -x
 ).
 .TP
 .B \-d
@@ -130,6 +131,9 @@ to a file.
 .TP
 .B \-t
 Add current timetamp to the output.
+.TP
+.B \-x
+Add date & time to the output.
 .TP
 .B \-v
 Verbose operation.  Verbosely describe tcpflow's operation.
