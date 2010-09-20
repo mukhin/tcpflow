@@ -6,8 +6,7 @@ Makefile
 tcpflow.spec
 src/Makefile
 src/conf.h
-src/stamp-h
-src/stamp-h.in
+src/stamp-*
 src/.deps
 src/tcpflow
 src/*.o
