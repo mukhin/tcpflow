@@ -57,10 +57,6 @@
 #include <stdarg.h>
 #include <errno.h>
 
-#ifdef HAVE_STANDARDS_H
-# include <standards.h>
-#endif
-
 #ifdef HAVE_STRING_H
 # include <string.h>
 #endif

@@ -21,38 +21,44 @@ AM_CONDITIONAL(GCC, test "$GCC" = yes)   # let the Makefile know if we're gcc
 # Check whether some low-level functions/files are available
 AC_HEADER_STDC
 
-# TODO: Check if all those headers are necessary to test.
-AC_CHECK_HEADERS(standards.h)
-AC_CHECK_HEADERS(string.h strings.h sys/resource.h sys/types.h unistd.h)
-AC_CHECK_HEADERS(sys/bitypes.h sys/socket.h netinet/tcp.h netinet/in_systm.h)
-AC_CHECK_HEADERS(netinet/in.h netinet/ip.h)
-
-# Check net/if.h separately to avoid warning "net/if.h: present but cannot be compiled"
-AC_CHECK_HEADERS([net/if.h], [], [], [
-  #include <stdio.h>
+# TODO: Check if all these headers are necessary to test.
+AC_CHECK_HEADERS(
+  strings.h \
+  sys/resource.h \
+  sys/types.h \
+  unistd.h \
+  sys/bitypes.h \
+  sys/socket.h \
+  netinet/tcp.h \
+  netinet/in_systm.h \
+  netinet/in.h \
+  netinet/ip.h \
+  net/if.h \
+  netinet/if_ether.h \
+  linux/if_ether.h \
+  signal.h,
+[], [], [
   #if STDC_HEADERS
   # include <stdlib.h>
-  # include <stddef.h>
-  #else
-  # if HAVE_STDLIB_H
-  # include <stdlib.h>
-  # endif
-  #endif
+  # include <stdarg.h>
+  # include <string.h>
+  #endif  
   #if HAVE_SYS_SOCKET_H
   # include <sys/socket.h>
   #endif
+  #ifdef HAVE_NETINET_IN_H
+  # include <netinet/in.h>
+  #endif
 ])
 
-AC_CHECK_HEADERS(netinet/if_ether.h linux/if_ether.h)
-AC_CHECK_HEADERS(signal.h)
-
-# These are the types to chech.  We look for them in either stdint.h,
+# These are the types to check.  We look for them in either stdint.h,
 # sys/types.h, or inttypes.h, all of which are part of the default-includes.
 # TODO(asd): type checking is obsolete. Fix it.
 AC_CHECK_TYPE(u_int32_t, unsigned long)
 AC_CHECK_TYPE(u_int16_t, unsigned short)
 AC_CHECK_TYPE(u_int8_t, unsigned char)
 AC_CHECK_TYPE(u_char, unsigned char)
+
 AC_TYPE_SIGNAL
 
 AC_CHECK_FUNCS(sigaction)
