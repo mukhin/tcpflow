@@ -35,7 +35,7 @@ AM_CONDITIONAL(GCC, test "$GCC" = yes)   # let the Makefile know if we're gcc
 # Check headers
 AC_HEADER_STDC
 
-AC_CHECK_HEADERS([string.h  strings.h sys/resource.h sys/types.h sys/bitypes.h unistd.h signal.h])
+AC_CHECK_HEADERS([sys/resource.h sys/types.h unistd.h signal.h])
 AC_CHECK_HEADERS([sys/socket.h netinet/tcp.h netinet/in_systm.h netinet/in.h])
 
 # On FreeBSD, test for netinet/ip.h will fail unless netinet/in.h is included first.

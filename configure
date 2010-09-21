@@ -4067,10 +4067,7 @@ done
 
 
 
-
-
-
-for ac_header in string.h  strings.h sys/resource.h sys/types.h sys/bitypes.h unistd.h signal.h
+for ac_header in sys/resource.h sys/types.h unistd.h signal.h
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then

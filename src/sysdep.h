@@ -69,12 +69,12 @@
 # include <sys/types.h>
 #endif
 
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
+#ifdef HAVE_INTTYPES_H
+# include <inttypes.h>
 #endif
 
-#ifdef HAVE_SYS_BITYPES_H
-# include<sys/bitypes.h>
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
 #endif
 
 #ifdef TIME_WITH_SYS_TIME
@@ -88,12 +88,12 @@
 # endif
 #endif
 
+// We will use a BSD format of tcp-related structures on Linux and BSD environment.
 #ifndef __FAVOR_BSD
-#define __FAVOR_BSD
+# define __FAVOR_BSD
 #endif
-
 #ifndef __USE_BSD
-#define __USE_BSD
+# define __USE_BSD
 #endif
 
 #ifdef HAVE_SYS_SOCKET_H
@@ -169,4 +169,3 @@
 
 
 #endif /* __SYSDEP_H__ */
-
