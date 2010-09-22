@@ -11,7 +11,7 @@ date=`LC_ALL=C date "+%a, %d %b %Y %H:%M:%S %z"`
 REVISION="$(git rev-list HEAD -n 1 | head -c 7)";
 LOCALID="$(git rev-list HEAD | wc -l)";
 
-ver="${REVISION}.${LOCALID}";
+ver="${LOCALID}.${REVISION}";
 
 rm -f debian/changelog
 rm -Rf debian/tcpflow
